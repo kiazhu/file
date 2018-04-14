@@ -1,0 +1,75 @@
+3-7
+10:45~11:00 repo
+    -u: 指定Manifest库的Git访问路径。 
+    -m: 指定要使用的Manifest文件。 
+    -b: 指定要使用Manifest仓库中的某个特定分支。 
+    –repo-url: 指定要检查repo是否有更新的远端repoGit库的访问路径。 
+    –no-repo-verify: 指定不检查repo库是否需要更新。
+11:00~11:30 
+    git 合并特定分支，http://blog.csdn.net/ybdesire/article/details/42145597
+    git cherry-pick 62ecb3
+    git checkout -b newbranch 62ecb3
+    git rebase --onto master 76cada
+11:30~12:00 gerrit
+    搭建gerrit并关联项目，http://blog.csdn.net/hudashi/article/details/54668359
+
+3-10
+10:00~10:30 git
+    拉取指定的分支
+    git checkout -b 本地分支名 origin/远程分支名
+
+    推送分支到远程仓库
+    git push --set-upstream origin 分支名
+
+    git blame [file_name] 
+    这个命令可以将文件中的每一行的作者、最新的变更提交和提交时间展示出来。
+
+    git log --oneline
+    git log --graph
+    git log --all
+
+    假设你不小心提交了些你不想要的东西，不得不做一次强制重置来恢复到之前的状态。然后，你意识到在这一过程中你丢失了其它一些信息并且想要把它们找回来，或者至少瞅一眼。这正是git reflog可以做到的。
+    git reflog
+
+    git stage
+
+16:00~16:30
+    git diff filename > *.patch
+    git apply patch
+
+    git 合并
+    默认合并策略可以带有参数，其中的几个正好是关于忽略空白改动的。 如果你看到在一次合并中有大量的空白问题，你可以简单地中止它并重做一次，这次使用 -Xignore-all-space 或 -Xignore-space-change 选项。 第一个选项忽略任意 数量 的已有空白的修改，第二个选项忽略所有空白修改。
+    git merge -Xignore-space-change whitespace
+    因为在本例中，实际上文件修改并没有冲突，一旦我们忽略空白修改，每一行都能被很好地合并。
+
+    使用 git log --stat 命令来查看简化版的 diff 日志信息，
+    git log/show --stat
+
+	repo forall -p -c 
+4-9
+	9:00~9:30 LVDS 应用详细说明
+	9:30~10:00 phy 驱动
+	10:00~11:00 整理代码
+	11:00~12:30 wifi 架构
+	14:00~15:30 rtc
+	15:30~16:30 phy 文档
+	16:30~17:30 rtc 文档
+	17:30~18:30 git/repo
+	18:30~20:00 usb 驱动
+
+	元器件表示方法：
+	电容:C 电阻:R 电感:L 二极管(LED): D 变压器:T 功率管:Q 芯片:U 接口:J 晶振:Y 保险:F
+
+
+	AM1805
+	RK1000
+	HDMI
+	ITE66121
+	LCD
+	TOUCHPAD
+	USB
+	SPDIF
+	SPI_LCD
+	RTL8201F
+	CLK
+

@@ -1,0 +1,91 @@
+
+1.LCD硬件规格
+    一块屏的显示不仅需要LCD驱动器，同时还需要LCDC控制器。通常LCD 驱动器会以 COF/COG 的形式与 LCD 玻璃基板制作在一起,而 LCD 控制器(LCDC)则由外部电路来实现。许多 MCU 内部直接集成了 LCD 控制器,比如 RK 系列的 CPU,通过 LCD 控制器可以方便地控制 STN 和 TFT 屏。
+
+    在 LCD 驱动中,还有一个重要的参数----点时钟,即 dot clock,在 LCD 的 datasheet 里面一般是 MHZ,名称为 PCLK 或者 DCLK。例如,如果为 28.37516 MHz,那么画1 个像素需要 35242 ps(皮秒):
+    1/(28.37516E6 Hz) = 35.242E-9 s
+如果屏幕的分辨率是 640×480,显示一行需要的时间是:
+    640*35.242E-9 s = 22.555E-6 s
+可以计算出水平扫描率大约是 31kHz:
+    1/(32.141E-6 s) = 31.113E3 Hz
+完整的屏幕有 480 线,但是垂直回扫和垂直同步也需要时间,假设垂直回扫和垂直同步需要 49 个象素时钟,因此,画一个完整的屏幕的时间是:
+    (480+49)*32.141E-6 s = 17.002E-3 s
+可以计算出垂直扫描率大约是 59kHz:
+    1/(17.002E-3 s) = 58.815 Hz
+    这意味着屏幕数据每秒钟大约刷新 59 次。
+    由此可以得到如下公式:
+        刷新率 =dotclock/((xres+left_margin+right_margin+hsync)*(yres+upper_margin+low_margin+vsync))
+
+在 linux frame buffer 子系统中,还有用到一个参数---像素时钟即 pixclock。
+    Pixclock = 1/dotclock
+
+LCDC 的刷新率通过 fb 的 sys 节点查看:
+    cat /sys/class/grahpics/fb0/fps
+
+LCD 相关的Clock可以通过如下命令获取
+    cat proc/clocks | busybox grep -r lcdc 
+
+==========================RK FB CODE==============================
+lcd framework code
+drivers/video/fbmen.c
+drivers/video/rockchip/rk_fb.c
+drivers/video/rockchip/rkfb_sysfs.c
+include/linux/rk_fb.h
+include/linux/rk_screen.h
+
+lcdc code
+drivers/video/rockchip/lcdc/rk3188_lcdc.c
+
+lcd screen configuration
+drivers/video/rockchip/screen/rk_screen.c
+drivers/video/rockchip/screen/lcd_b101ew05.c  //使用的是B101EW05屏
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

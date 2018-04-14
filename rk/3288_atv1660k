@@ -1,0 +1,51 @@
+项目名：AVT1660K
+调试：朱坤华
+时间：2018/01/11
+
+系统编译：
+    ./device/rockchip/rk3288/build.sh
+    或者 ./build.sh
+
+内核/dtb编译：
+    make resource.img -j16
+
+烧录工具：
+    1.使用源码目录：RKTools/windows/AndroidTool.rar和USB驱动
+
+进入烧录loader模式：
+    1.命令行下：reboot loader
+    2.插电开机前按住recovery按键（按键在主板反面）
+
+烧录方法：
+    1.拷贝镜像：源码目录下编译后生成的镜像目录，例如：RK3288_5.1.1_20180208
+    2.选中Image镜像，可选update.img升级，或者RK3288Ubootloader.bin升级
+	3.单独烧录kernel 和 resource.img
+
+
+调试完成的功能：
+	1.双HDMI输出，其中一路是IT66121转出来的
+	2.HMDIIN
+	3.RK1000CVBS
+
+未调试完的功能：
+	1.IRBlaster
+	2.spi lcd
+	3.camera
+
+编译遇到过的问题：
+    1.打包失败，是因为system配置的大小太小了，加100M后编译就可以了
+    device/rockchip/common
+    diff --git a/mkimage.sh b/mkimage.sh
+    index a4c2469..5a40e98 100755
+    --- a/mkimage.sh
+    +++ b/mkimage.sh
+    @@ -106,6 +106,7 @@ then
+             system_size=`ls -l $OUT/system.img | awk '{print $5;}'`
+             [ $system_size -gt "0" ] || { echo "Please make first!!!" && exit 1; }
+             MAKE_EXT4FS_ARGS=" -L system -S $OUT/root/file_contexts -a system $IMAGE_PATH/system.img $OUT/system"
+    +        system_size=$(($system_size + 100000000))
+             make_ext4fs -l $system_size $MAKE_EXT4FS_ARGS >/dev/null 2>&1
+             /sbin/tune2fs -c -1 -i 0 $IMAGE_PATH/system.img >/dev/null 2>&1
+             system_size=$(($system_size + 5242880))
+
+

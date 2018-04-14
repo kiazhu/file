@@ -1,0 +1,6 @@
+
+查看声卡：
+    cat /proc/asound/cards
+
+注意声卡CODEC为Slave模式,主控为master模式
+

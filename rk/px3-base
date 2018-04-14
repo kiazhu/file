@@ -1,0 +1,48 @@
+项目名：PX3 
+调试：朱坤华
+
+代码：
+    /work/home/zkh/RK/rk3229_box
+
+系统编译方法：
+    ./device/rockchip/px3/build.sh
+
+内核驱动调试技巧：
+    为了快速调试，每次单独编译内核，编译后直接烧录内核
+	所以先做一个不包含kernel.img的boot.img烧录进去，
+    调试驱动后只编译kernel.img，然后把kernel.img烧录进去就可以了
+
+	可以用下面命令编译不包含kernel的boot.img
+	mkbootimg.sh
+	echo -n "create boot.img without kernel... "
+	rm -r root
+	rm boot.img
+	cp -r ../out/target/product/px3/root/ .
+
+	mkbootfs root | minigzip > ramdisk.img && \
+	truncate -s "%4" ramdisk.img && \
+	../rkst/mkkrnlimg ramdisk.img boot.img >/dev/null
+	echo ""
+	ls -l boot.img
+	echo "done."
+
+内核单独编译方法：
+    make rkpx3_sdk_rev2_defconfig
+    make kernel.img -j8
+
+烧录工具：
+    1.使用源码目录：RKTools/windows/AndroidTool_px3.zip和USB驱动
+
+进入烧录loader模式的方法：
+    1.命令行下：reboot loader
+    2.插电开机前按住recovery按键（按键在RK616旁边，RK616后续会贴到背面）
+
+烧录方法：
+    1.拷贝镜像：源码目录下编译后生成的镜像目录，例如：PX3_5.1.1_20180319
+    2.windows下用AndroidTool_px3.zip烧录，linux下用upgrade_tool烧录：
+
+当前编译烧录遇到过的问题：
+    1.update.img整包现在有问题,烧录后卡在starting kernel ...
+        感觉parameter.txt是有问题的，单独烧录原厂的parameter和boot.img后是可以正常起来
+        现在代码中的parameter.txt文件是杨工从3288上拷贝过来的，我改成原厂默认的也不行
+

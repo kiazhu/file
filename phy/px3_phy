@@ -1,0 +1,89 @@
+	
+	我们知道，以太网架构中，以太网接口分为协议层和物理层。
+	目前PX3这款主控是已经集成了MAC控制器。按功能来分的话，MAC控制器实现的是协议层的功能，PHY芯片实现的是物理层的功能。
+MAC控制器：功能类似于一个controller，以太网协议层数据传送给MAC，由MAC通过DMA发送到外部接口，外部接口连接着PHY。或者接收从PHY传过来的信号，DMA搬运到内存中存储。 
+	PHY芯片：以PX3为例，PX3用的是8201F芯片。一般来说都是一个独立芯片，有数字和模拟两部分，也可以集成在ARM芯片内部。负责把从MAC传送过来的数据转换成可以在网线上传输的信号，或者接收网线上传输过来的信号，转换成数字信号回传给MAC。分为百兆PHY和千兆PHY。 
+	PHY一般和具体的MAC控制驱动联系一起，这里以PX3的MAC驱动为例，由它切入到PHY驱动。PX3通过mdio总线访问、控制PHY，源码实现在driver/net/phy/mdio_bus.c中。
+	我们先看看架构里不同层的代码
+
+	PHY配置：自协商模式开启／关闭； 自协商关闭状态下，配置为强制full duplex, half duplex， 强制1000Mbps/100Mbps/10Mbps；WOL开启／关闭。 
+	MAC和PHY之间的接口分为RMII接口（百兆），RGMII接口（千兆）。 
+1.RTL8201F硬件 
+	对于支持RTL8201F，首先查一下phy驱动里面是否支持这颗芯片，发现没有支持，
+
+板配、架构控制(上电、复位、时钟)：
+	arch/arm/mach-rkpx3/board-rkpx3-sdk.c 定义了pwr/rst引脚
+	arch/arm/mach-rk30/board-rk31-sdk-vmac.c 包括了reset、clk的控制
+	arch/arm/mach-rkpx3/clock_data.c 时钟配置
+	arch/arm/plat-rk/iomux.c	
+
+PHY驱动：
+	drivers/net/phy/realtek.c	在此添加支持8201f的驱动，有可能能够直接兼容，可看驱动打印直接
+	driver/net/phy/mdio_bus.c  //总线驱动
+	drivers/net/phy/phy_device.c
+
+RK29 MAC控制器驱动
+	drivers/net/rk29_vmac.c  //平台驱动
+
+Jni层：
+	./native/data/etc/android.hardware.ethernet.xml
+
+framework层：
+	frameworks/opt/net/ethernet/  定义了接口和服务
+	frameworks/base/core/java/android/net/EthernetManager.java  管理器和监听器，会通过aidl进程间通信和hal通讯
+	frameworks/base/core/java/android/net/IEthernetManager.aidl
+	frameworks/base/core/java/android/net/IEthernetServiceListener.aidl
+
+App 层(设置里面的以太网选项):
+	packages/apps/Settings/src/com/android/settings/EthernetSettings.java
+
+以太网的灯控制：
+	1.链路活灯和通讯灯两个都由phy芯片控制
+
+DM9000网卡驱动视频教程：
+	https://v.qq.com/x/page/p0332ruzkra.html
+PHY以太网自动协商原理
+	https://blog.csdn.net/maopig/article/details/52742902
+	https://blog.csdn.net/skyflying2012/article/details/17557743
+	https://blog.csdn.net/yao_fairy/article/details/51374811
+以太网的phy寄存器分析
+	https://blog.csdn.net/subfate/article/details/44958597
+Linux PHY几个状态的跟踪
+	https://blog.csdn.net/subfate/article/details/44900665
+linux+arm 网卡故障调试：ethtool&phy寄存器读写//调试工具
+	https://blog.csdn.net/vc66vcc/article/details/54582504
+hi3531 uboot phy调试总结
+	https://blog.csdn.net/xiaoaid01/article/details/51104837
+PHY 、MII 接口
+	https://blog.csdn.net/beyondioi/article/details/6892520
+第十六章PHY -基于Linux3.10
+	https://blog.csdn.net/shichaog/article/details/44682931
+千兆网口、光口调试总结
+	https://blog.csdn.net/qijitao/article/details/52091130
+PHY管理接口（MDIO）
+	https://blog.csdn.net/supreme42/article/details/8257282
+以太网PHY芯片之MII_MDIO接口详解
+	https://wenku.baidu.com/view/5306d35f76a20029bc642d11.html
+【收藏】以太网MAC和PHY之间的接口总结
+	https://blog.csdn.net/krens/article/details/55271519
+
+比较难理解的内容：
+	1.片选（内存映射，可挂到几个CPU的总线上，比如三星的Bank0～Bank5，会映射到对于的地址上去，在这段地址内，访问的都是这个网卡）内存映射，可挂到几个CPU的总线上，比如三星的Bank0～Bank5，会映射到对于的地址上去，在这段地址内，访问的都是这个网卡,片选一般低电平
+
+
+问题确认：
+1、mdio接口和rgmii或者mii接口是否正确。
+2、电源是否稳定，晶振是否起振并且频率匹配。
+3、phy地址的配置是否正确，不能是0地址，因为0地址默认是所以芯片的地址。
+4、phy芯片输出时钟是否正确。
+5、phy和主芯片rgmii接口电平是否匹配。
+6、phy间的线序是否正确以及线路是否完好。
+7、mac和phy间的数据速率是否匹配即都是千兆百兆或10兆。
+8、phy相关寄存器数值是否正常
+
+关于主芯片mac部分接口注意：
+1、rgmii或者mii以及mdio接口是否正确
+2、mdio时序是否正确。
+3、rgmii时钟是否正确。
+
+

@@ -1,0 +1,43 @@
+
+http://blog.csdn.net/messidona11/article/details/59512453
+查看设备:cat /proc/devices
+查看设备具体号: cat /dev/ttyS  +[table键]
+查看串口驱动状态:sudo cat /proc/tty/driver/serial
+
+监听串口
+如：（选择想要监听的号）cat /dev/ttyS0
+
+开两个终端：
+    一个cat /dev/ttyS接收
+    另一个echo   “字符” >/dev/ttyS2   发送数据 
+
+    cat /proc/tty/driver/serial查看串口中断
+    测试自己可以将TX RX短接。
+    查看串口状态：cat /proc/tty/driver/serial
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

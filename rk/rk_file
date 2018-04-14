@@ -1,0 +1,63 @@
+*******************************************************************
+************************RK 相关驱动目录和文件配置******************
+*******************************************************************
+
+==========================RK LCD CODE==============================
+lcd 框架代码de
+drivers/video/fbmen.c
+drivers/video/rockchip/rk_fb.c
+drivers/video/rockchip/rkfb_sysfs.c
+include/linux/rk_fb.h
+include/linux/rk_screen.h
+
+lcdc 控制器代码
+drivers/video/rockchip/lcdc/rk3188_lcdc.c
+
+lcd 屏幕配置相关代码
+drivers/video/rockchip/screen/rk_screen.c
+内核小于3.10
+drivers/video/rockchip/screen/lcd_b101ew05.c  //使用的是B101EW05屏
+内核大于3.10
+在dts里面配置
+
+==========================RK CAMERA CODE==============================
+android:
+        camera Hal层代码
+            hardware\rk29\camera\CameraHal 
+        ISP 库相关头文件信息
+            hardware\rk29\camera\SiliconImage\isi\drv //Sensor 驱动源码
+            hardware\rk29\camera\SiliconImage\isi\OV8825\calib //Sensor 模组 tunning 参数
+kernel:
+        CamSys 驱动源码
+            drivers\media\video\rk_camsys
+            include\media\camsys_head.h
+
+==========================RK WIFI CODE==============================
+
+
+
+
+==========================RK IR CODE==============================
+
+
+
+==========================RK PMU CODE==============================
+
+
+==========================RK HDMI CODE==============================
+
+
+==========================RK USB CODE==============================
+
+==========================RK USB CODE==============================
+
+
+
+
+
+
+
+
+
+
+

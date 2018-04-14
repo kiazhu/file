@@ -1,0 +1,6 @@
+otg 配置otg vbus
+	drivers/usb/dwc_otg/usbdev_rk30.c
+
+浅谈USB驱动架构
+	https://blog.csdn.net/u014276460/article/details/47292427
+	

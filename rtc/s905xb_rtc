@@ -1,0 +1,16 @@
+
+
+
+
+
+
+jni
+	frameworks/base/services/core/jni/com_android_server_AlarmManagerService.cpp
+
+framework层
+	frameworks/base/services/java/com/android/server/AlarmManagerService.java 
+    frameworks/base/core/java/android/app/AlarmManager.java
+
+Android RTC 自下往上浅析
+	https://blog.csdn.net/weiqifa0/article/details/49363985
+

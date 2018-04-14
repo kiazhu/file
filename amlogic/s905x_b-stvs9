@@ -1,0 +1,67 @@
+
+=================================S905X_b 编译方法=======================================
+全编译：在源码根目录执行：./device/amlogic/stvs9/auto_build.sh
+
+dtb编译
+        rm out/target/product/stvs9/dtb.img
+        . build/envsetup.sh
+        lunch stvs9-userdebug-64
+        make dtbimage
+可在源码根目录添加一个build_dtb.sh,然后输入以上命令编译
+
+编译内核
+在内核根目录，添加一个mkern.sh然后输入
+        #!/bin/bash -ex
+
+        # Run from top of kitkat source
+
+        #ROOTFS=$1
+        ROOTFS="../out/target/product/stvs9/ramdisk.img"
+        PREFIX_CROSS_COMPILE=aarch64-linux-gnu-
+
+        if [ "$ROOTFS" == "" -o ! -f "$ROOTFS" ]; then
+            echo "Usage: $0 <ramdisk.img> [m]"
+            exit 1
+        fi
+
+        KERNEL_OUT=out/target/product/stvs9/obj/KERNEL_OBJ
+        #mkdir -p $KERNEL_OUT
+
+        if [ ! -f $KERNEL_OUT/.config ]; then
+            make O=../$KERNEL_OUT meson64_defconfig ARCH=arm64 CROSS_COMPILE=$PREFIX_CROSS_COMPILE
+        fi
+        if [ "$2" != "m" ]; then
+            make O=../$KERNEL_OUT ARCH=arm64 -j16 CROSS_COMPILE=$PREFIX_CROSS_COMPILE UIMAGE_LOADADDR=0x1008000
+        fi
+        make O=../$KERNEL_OUT modules ARCH=arm64 -j16 CROSS_COMPILE=$PREFIX_CROSS_COMPILE
+
+        if [ "$2" != "m" ]; then
+        #    make -C common O=../$KERNEL_OUT gxl_p212.dtd ARCH=arm64 CROSS_COMPILE=$PREFIX_CROSS_COMPILE
+            make O=../$KERNEL_OUT gxl_stvs9_dongle_2g.dtb -j16 ARCH=arm64 CROSS_COMPILE=$PREFIX_CROSS_COMPILE
+        fi
+
+
+        if [ "$2" != "m" ]; then
+            ../out/host/linux-x86/bin/mkbootimg --kernel ../$KERNEL_OUT/arch/arm64/boot/Image \
+                --ramdisk ${ROOTFS} \
+                --second ../$KERNEL_OUT/arch/arm64/boot/dts/amlogic/gxl_stvs9_dongle_2g.dtb \
+                --output ../out/target/product/stvs9/boot.img
+            ls -l ../out/target/product/stvs9/boot.img
+            echo "boot.img done"
+        fi
+然后直接编译，编译出来的boot.img用U盘烧录
+
+=================================烧录方法=======================================
+接上串口，把烧录的文件拷贝到U盘，然后接上U盘
+1.u盘烧录boot.img,进入uboot命令行，然后执行下面命令
+    usb start;fatload usb 0 $loadaddr boot.img;store write boot $loadaddr 0 2000000;reboot;
+2.u盘烧录dtb.img，进入uboot命令行，然后执行下面命令
+    usb start;fatload usb 0 1080000 dtb.img;store write boot 1080000;reboot;
+3.u盘烧录版本信息
+    usb start;fatload usb 0 12000000 version.ver;hw_write 12000000;reboot;
+4.烧录整包，用到USB_Burning_Tool工具,image:out/target/product/stvs9/image20180312
+
+=================================调试技巧=======================================
+1.linux可以用scp命令，直接拷贝到U盘,windows可以用批处理，直接把镜像复制到U盘
+2.在secure CRT 设置按键，按键命令设置好烧录命令，点击按键即可一键完成烧录
+
