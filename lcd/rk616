@@ -1,0 +1,70 @@
+==========================RK616 CODE==============================
+板配设置
+arch/arm/configs/rkpx3_sdk_rev2_defconfig
+    //打开LVDS，关掉HDMI和MIPI的
+    CONFIG_RK616_LVDS=y
+    CONFIG_RK616_MIPI_DSI is not set
+    CONFIG_RK_HDMI is not set
+
+    //关掉原来的屏配置，配置成EW05的
+    CONFIG_LCD_B101EW05=y
+    CONFIG_LCD_KD080D24_MIPI is not set
+arch/arm/plat-rk/include/plat/board.h
+    //PWM 高有效，0改为1
+    #define PWM_EFFECT_VALUE  1
+
+    //LCD_EN_VALUE 拉低
+    define LCD_EN_VALUE       GPIO_LOW
+
+    //RK616_PWREN_PIN 拉低
+    gpio_direction_output(RK616_PWREN_PIN,GPIO_LOW);
+arcn/arm/mach-rkpx3/board-rkpx3-fac.c
+arch/arm/mach-rkpx3/board-rkpx3-sdk.c
+
+RK616核心文件
+drivers/mfd/rk616-core.c
+drivers/mfd/rk616-vif.c
+include/linux/mfd/rk616.h
+
+RK616转HDMI的代码
+drivers/video/rockchip/hdmi/chips/rk616/
+
+RK616 Codec 代码
+sound/soc/codecs/rk616_codec.c
+sound/soc/codecs/rk616_codec.h
+sound/soc/rk29/rk_rk616.c
+
+RK616 转LVDS代码
+./transmitter/rk616_lvds.c
+
+RK616 转MIPI DSI代码
+./transmitter/rk616_mipi_dsi.c
+
+==========================RK FB CODE==============================
+framework code
+drivers/video/fbmen.c
+drivers/video/rockchip/rk_fb.c
+drivers/video/rockchip/rkfb_sysfs.c
+include/linux/rk_fb.h
+include/linux/rk_screen.h
+
+lcdc code
+drivers/video/rockchip/lcdc/rk3188_lcdc.c
+
+lcd screen configuration
+drivers/video/rockchip/screen/rk_screen.c
+drivers/video/rockchip/screen/lcd_b101ew05.c  //使用的是B101EW05屏
+
+
+==========================RK BL CODE==============================
+背光PWM配置
+drivers/video/backlight/rk29_backlight.c
+    //将原来的1000改为250
+    #define PWM_APB_PRE_DIV      250
+
+
+==========================RK616 调试技巧==============================
+查看声卡：cat /proc/asound/cards
+
+
+
