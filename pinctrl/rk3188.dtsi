@@ -1,0 +1,305 @@
+
+#include "skeleton.dtsi"
+#include "rk3188-pinctrl.dtsi"
+
+
+/ {
+	compatible = "rockchip,rk3188";
+	interrupt-parent = <&gic>;
+
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		serial2 = &uart2;
+		serial3 = &uart3;
+		i2c0 = &i2c0;
+		i2c1 = &i2c1;
+		i2c2 = &i2c2;
+		i2c3 = &i2c3;
+		i2c4 = &i2c4;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <0>;
+		};
+		cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <1>;
+		};
+		cpu@2 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <2>;
+		};
+		cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a9";
+			reg = <3>;
+		};
+	};
+
+	twd-wdt@1013c620 {
+		compatible = "arm,cortex-a9-twd-wdt";
+		reg = <0x1013c620 0x20>;
+		interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+	};
+
+	gic: interrupt-controller@1013d000 {
+		compatible = "arm,cortex-a9-gic";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		reg = <0x1013d000 0x1000>,
+		      <0x1013c100 0x0100>;
+	};
+
+	L2: cache-controller@10138000 {
+		compatible = "arm,pl310-cache";
+		reg = <0x10138000 0x1000>;
+		cache-unified;
+		cache-level = <2>;
+		arm,tag-latency = <1 1 1>;
+		arm,data-latency = <2 3 1>;
+		rockchip,prefetch-ctrl = <0x70000003>;
+		/* L2X0_DYNAMIC_CLK_GATING_EN | L2X0_STNDBY_MODE_EN */
+		rockchip,power-ctrl = <0x3>;
+/*
+		(0x1 << 0) |	// Full line of write zero behavior Enabled
+		(0x1 << 25) | 	// Round-robin replacement
+		(0x1 << L2X0_AUX_CTRL_DATA_PREFETCH_SHIFT) |
+		(0x1 << L2X0_AUX_CTRL_INSTR_PREFETCH_SHIFT) |
+		(0x1 << L2X0_AUX_CTRL_EARLY_BRESP_SHIFT)
+*/
+		rockchip,aux-ctrl = <0x72000001 (~0x72000001)>;
+	};
+
+	cpu_axi_bus: cpu_axi_bus@10128000 {
+		compatible = "rockchip,cpu_axi_bus";
+		reg = <0x10128000 0x8000>;
+		qos {
+			dmac {
+				rockchip,offset = <0x1000>;
+				rockchip,priority = <0 0>;
+			};
+			cpu0 {
+				rockchip,offset = <0x2000>;
+				rockchip,priority = <0 0>;
+			};
+			cpu1r {
+				rockchip,offset = <0x2080>;
+				rockchip,priority = <0 0>;
+			};
+			cpu1w {
+				rockchip,offset = <0x2100>;
+				rockchip,priority = <0 0>;
+			};
+			peri {
+				rockchip,offset = <0x4000>;
+				rockchip,priority = <2 2>;
+			};
+			gpu {
+				rockchip,offset = <0x5000>;
+				rockchip,priority = <2 1>;
+			};
+			vpu {
+				rockchip,offset = <0x6000>;
+			};
+			vop0 {
+				rockchip,offset = <0x7000>;
+				rockchip,priority = <3 3>;
+			};
+			cif0 {
+				rockchip,offset = <0x7080>;
+			};
+			ipp {
+				rockchip,offset = <0x7100>;
+			};
+			vop1 {
+				rockchip,offset = <0x7180>;
+				rockchip,priority = <3 3>;
+			};
+			cif1 {
+				rockchip,offset = <0x7200>;
+			};
+			rga {
+				rockchip,offset = <0x7280>;
+			};
+		};
+	};
+
+	bootrom@10120000 {
+		compatible = "rockchip,bootrom";
+		reg = <0x10120000 0x4000>;
+	};
+
+	bootram@10080000 {
+		compatible = "rockchip,bootram";
+		reg = <0x10080000 0x20>; /* 32 bytes */
+	};
+
+	sram@10080020 {
+		compatible = "mmio-sram";
+		reg = <0x10080020 (0x8000 - 0x20)>; /* 32k - 32 */
+		map-exec;
+	};
+
+	pmu@20004000 {
+		compatible = "rockchip,pmu";
+		reg = <0x20004000 0x4000>;
+	};
+
+	timer@200380a0 {
+		compatible = "rockchip,timer";
+		reg = <0x200380a0 0x20>;
+		interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	timer@20038000 {
+		compatible = "rockchip,timer";
+		reg = <0x20038000 0x20>;
+		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	timer@20038020 {
+		compatible = "rockchip,timer";
+		reg = <0x20038020 0x20>;
+		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	timer@20038060 {
+		compatible = "rockchip,timer";
+		reg = <0x20038060 0x20>;
+		interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	timer@20038080 {
+		compatible = "rockchip,timer";
+		reg = <0x20038080 0x20>;
+		interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	uart0: serial@10124000 {
+		compatible = "rockchip,serial";
+		reg = <0x10124000 0x100>;
+		interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <24000000>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		pinctrl-names = "default","sleep";
+		pinctrl-0 = <&uart0_xfer &uart0_cts &uart0_rts>;
+		pinctrl-1 = <&spi0_txd>;
+		status = "disabled";
+	};
+
+	uart1: serial@10126000 {
+		compatible = "rockchip,serial";
+		reg = <0x10126000 0x100>;
+		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <24000000>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&uart1_xfer &uart1_cts &uart1_rts>;
+		status = "disabled";
+	};
+
+	uart2: serial@20064000 {
+		compatible = "rockchip,serial";
+		reg = <0x20064000 0x100>;
+		interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <24000000>;
+		current-speed = <115200>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&uart2_xfer>;
+		status = "disabled";
+	};
+
+	uart3: serial@20068000 {
+		compatible = "rockchip,serial";
+		reg = <0x20068000 0x100>;
+		interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <24000000>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		pinctrl-names = "default","sleep";
+		pinctrl-0 = <&uart3_xfer &uart3_cts &uart3_rts>;
+		pinctrl-1 = <&uart3_xfer_sleep>;
+		status = "disabled";
+	};
+
+	fiq-debugger {
+		compatible = "rockchip,fiq-debugger";
+		rockchip,serial-id = <2>;
+		rockchip,signal-irq = <112>;
+		rockchip,wake-irq = <0>;
+		status = "disabled";
+	};
+
+	i2c0: i2c@2002d000 {
+		compatible = "rockchip,rk30-i2c";
+		reg = <0x2002d000 0x1000>;
+		interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c0_sda &i2c0_scl>;
+		status = "disabled";
+	};
+
+	i2c1: i2c@2002f000 {
+		compatible = "rockchip,rk30-i2c";
+		reg = <0x2002f000 0x1000>;
+		interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c1_sda &i2c1_scl &ap0_vcc &lcdc1_vcc>;
+		status = "disabled";
+	};
+
+	i2c2: i2c@20055000 {
+		compatible = "rockchip,rk30-i2c";
+		reg = <0x20055000 0x1000>;
+		interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c2_sda &i2c2_scl>;
+		status = "disabled";
+	};
+
+	i2c3: i2c@20059000 {
+		compatible = "rockchip,rk30-i2c";
+		reg = <0x20059000 0x1000>;
+		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		pinctrl-names = "default", "sleep", "idle";
+		pinctrl-0 = <&i2c3_sda &i2c3_scl>;
+		pinctrl-1 = <&i2c3_sda_sleep &i2c3_scl_sleep>;
+		pinctrl-2 = <&i2c3_sda_idle &i2c3_scl_idle>;
+		//status = "disabled";
+	};
+
+	i2c4: i2c@2005d000 {
+		compatible = "rockchip,rk30-i2c";
+		reg = <0x2005d000 0x1000>;
+		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;		
+		pinctrl-names = "default", "sleep", "idle";
+		pinctrl-0 = <&i2c4_sda &i2c4_scl>;
+		pinctrl-1 = <&i2c4_sda_sleep &i2c4_scl_sleep>;
+		pinctrl-2 = <&i2c4_sda_idle &i2c4_scl_idle>;
+
+		//status = "disabled";
+	};
+};

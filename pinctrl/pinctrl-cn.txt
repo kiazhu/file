@@ -1,0 +1,876 @@
+http://ienove.blog.163.com/blog/static/4066454120132111213313/
+
+
+PINCTRL子系统用于处理：
+- 枚举和命名控制引脚
+
+- 复用管脚，pad，金手指。
+
+- 配置管脚、pad、金手指，如软件控制的偏置和驱动模式指定的管脚，如上拉/下拉，开漏极、负载电流等
+
+
+顶层接口
+===================
+管脚控制器定义
+
+
+
+-管脚控制器用于控制芯片管脚。它通常可以以一组寄存器的形式存在，用于使能独立或成组管脚的复用、偏置、设置负载电流、设置驱动能力等
+
+管脚定义
+
+-管脚（也代指pad、金手指、ball，依据其封装不同）输入/输出线使用无符号整型数表示，范围为0到maxpin。这个数字空间是每个管脚控制器独有的，这样，一个系统中可能有几个此类的数字空间。管脚空间可以是稀疏的，空间中可能存在一些并没有管脚存在间隙，。
+
+实例化一个管脚控制器，会注册一个描述符到管脚控制架构，这个描述符包含一组为它控制管脚的管脚描述符。
+
+下面是一个PGA封装芯片的底视图：
+        A   B   C   D   E   F   G   H
+
+   8    o   o   o   o   o   o   o   o
+
+   7    o   o   o   o   o   o   o   o
+
+   6    o   o   o   o   o   o   o   o
+
+   5    o   o   o   o   o   o   o   o
+
+   4    o   o   o   o   o   o   o   o
+
+   3    o   o   o   o   o   o   o   o
+
+   2    o   o   o   o   o   o   o   o
+
+   1    o   o   o   o   o   o   o   o
+
+
+为了注册一个管脚控制器且命名此封装上的管脚，我们可以在驱动中使用如下做法：
+#include <linux/pinctrl/pinctrl.h>
+
+const struct pinctrl_pin_desc foo_pins[] = {
+      PINCTRL_PIN(0, "A8"),
+      PINCTRL_PIN(1, "B8"),
+      PINCTRL_PIN(2, "C8"),
+      ...
+      PINCTRL_PIN(61, "F1"),
+      PINCTRL_PIN(62, "G1"),
+      PINCTRL_PIN(63, "H1"),
+};
+
+static struct pinctrl_desc foo_desc = {
+	.name = "foo",
+	.pins = foo_pins,
+	.npins = ARRAY_SIZE(foo_pins),
+	//.maxpin = 63,(注：linux3.4.4已删除)
+	.owner = THIS_MODULE,
+};
+
+int __init foo_probe(void)
+{
+	struct pinctrl_dev *pctl;
+
+	pctl = pinctrl_register(&foo_desc, <PARENT>, NULL);
+	if (IS_ERR(pctl))
+		pr_err("could not register foo pin driver\n");
+}
+
+
+为了使能pinctrl子系统的PINCTRL及其下属的PINMUX和PINCONF子组，且使能驱动，你需要在相关的Kconfig条目中选择它们。可以查看arch/driver/Kconfig。
+
+管脚通常有比我们所用的更有意义的名字。你可以在芯片的datasheet中找到它们。注意，核心pinctrl.h文件提供了一个名为PINCTRL_PIN()的宏来创建这个结构条目。就像你看到的，代码枚举了从0到63的管脚。这个枚举是必须的，实践中，你需要彻底考虑清楚你的编号系统，以便它能够与寄存器布局和驱动相匹配，否则的话，代码会变得复杂且难于理解。你还要考虑与GPIO范围偏移的匹配，这也可能被管脚控制器处理。
+
+对于一个467pad的pad环（这与实际芯片的管脚相反），我使用一个如下的枚举，绕在芯片边沿的周围，看起来也像一个工业标准（所有的这些pad也有名字）。
+
+     0 ..... 104
+   466        105
+     .        .
+     .        .
+   358        224
+    357 .... 225
+
+
+
+管脚组
+==========
+
+许多控制器需要处理管脚组，因此管脚控制器子系统需要一个机制用来枚举管脚组且检索一个特定组中实际枚举的管脚。
+
+例如，假设我们有一组用于SPI接口的管脚{0，8，16，24}，还有一组用于I2C接口的管脚{24，25}。
+
+这两组提供给管脚控制子系统，以实现这些类的pinctrl_ops：
+
+#include <linux/pinctrl/pinctrl.h>
+
+struct foo_group {
+	const char *name;
+	const unsigned int *pins;
+	const unsigned num_pins;
+};
+
+static const unsigned int spi0_pins[] = { 0, 8, 16, 24 };
+static const unsigned int i2c0_pins[] = { 24, 25 };
+
+static const struct foo_group foo_groups[] = {
+	{
+		.name = "spi0_grp",
+		.pins = spi0_pins,
+		.num_pins = ARRAY_SIZE(spi0_pins),
+	},
+	{
+		.name = "i2c0_grp",
+		.pins = i2c0_pins,
+		.num_pins = ARRAY_SIZE(i2c0_pins),
+	},
+};
+
+
+static int foo_list_groups(struct pinctrl_dev *pctldev, unsigned selector)
+{
+	if (selector >= ARRAY_SIZE(foo_groups))
+		return -EINVAL;
+	return 0;
+}
+
+static const char *foo_get_group_name(struct pinctrl_dev *pctldev,
+				       unsigned selector)
+{
+	return foo_groups[selector].name;
+}
+
+static int foo_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
+			       unsigned ** const pins,
+			       unsigned * const num_pins)
+{
+	*pins = (unsigned *) foo_groups[selector].pins;
+	*num_pins = foo_groups[selector].num_pins;
+	return 0;
+}
+
+static struct pinctrl_ops foo_pctrl_ops = {
+	.list_groups = foo_list_groups,
+	.get_group_name = foo_get_group_name,
+	.get_group_pins = foo_get_group_pins,
+};
+
+
+static struct pinctrl_desc foo_desc = {
+       ...
+       .pctlops = &foo_pctrl_ops,
+};
+
+
+管脚控制子系统将从selector=0开始重复调用.list_groups()直到函数返回非零，以决定合法的选择，接下来它将调用其余的函数来接收这些名字和管脚组。驱动维护管脚组的数据，这只是一个简单的例子 -- 实际中，你可能需要更多的条目在你的组结构中，例如，指定与每个组相关的寄存器范围等。
+
+
+
+管脚配置
+=================
+
+
+管脚有时可以被软件配置成多种方式，多数与它们作为输入/输出时的电气特性相关。例如，可以使一个输出管脚处于高阻状态，或是“三态”（意味着它被有效地断开连接）。你可以通过设置一个特定寄存器值将一个输入管脚与VDD或GND相连---上拉/下拉---以便在没有信号驱动管脚或是未连接时管脚上可以有个确定的值。
+
+
+管脚配置可以使用程序控制，一是显式使用下面将要描述的API，或是在映射表中增加配置条目。查看下面的“单板配置”。
+
+例如，一个平台可以如下做以上拉一个管脚到VDD：
+#include <linux/pinctrl/consumer.h>
+
+ret = pin_config_set("foo-dev", "FOO_GPIO_PIN", PLATFORM_X_PULL_UP);
+
+配置参数PLATFORM_X_PULL_UP的格式和含义完全由管脚控制器驱动定义。
+
+管脚配置驱动在操作中实现了一个改变管脚配置的回调，如下
+#include <linux/pinctrl/pinctrl.h>
+#include <linux/pinctrl/pinconf.h>
+#include "platform_x_pindefs.h"
+
+static int foo_pin_config_get(struct pinctrl_dev *pctldev,
+		    unsigned offset,
+		    unsigned long *config)
+{
+	struct my_conftype conf;
+
+	... Find setting for pin @ offset ...
+
+	*config = (unsigned long) conf;
+}
+
+static int foo_pin_config_set(struct pinctrl_dev *pctldev,
+		    unsigned offset,
+		    unsigned long config)
+{
+	struct my_conftype *conf = (struct my_conftype *) config;
+
+	switch (conf) {
+		case PLATFORM_X_PULL_UP:
+		...
+		}
+	}
+}
+
+static int foo_pin_config_group_get (struct pinctrl_dev *pctldev,
+		    unsigned selector,
+		    unsigned long *config)
+{
+	...
+}
+
+static int foo_pin_config_group_set (struct pinctrl_dev *pctldev,
+		    unsigned selector,
+		    unsigned long config)
+{
+	...
+}
+
+static struct pinconf_ops foo_pconf_ops = {
+	.pin_config_get = foo_pin_config_get,
+	.pin_config_set = foo_pin_config_set,
+	.pin_config_group_get = foo_pin_config_group_get,
+	.pin_config_group_set = foo_pin_config_group_set,
+};
+
+/* Pin config operations are handled by some pin controller */
+static struct pinctrl_desc foo_desc = {
+	...
+	.confops = &foo_pconf_ops,
+};
+
+
+由于一些控制器具有用于处理管脚全部组的特殊逻辑，它们可以开发整组管脚控制器函数（功能）。pin_config_group_set()函数允许返回错误码 -EAGAIN，表示它不愿意或无法处理对应组，或是只能（只愿）做一些组级别的处理且接下来会掉落到遍历所有的管脚操作（此种情况下，每个独立的管脚会单独被pin_config_set()调用处理）。
+
+
+与GPIO子系统之间的交互
+===================================
+
+
+GPIO驱动可能需要在一个已经注册到管脚控制器的物理管脚上执行不同形式的操作。
+
+由于管脚控制器有它自己的管脚空间，我们需要一个映射以便pinctrl子系统可以指出由哪个管脚控制器处理一个指定GPIO管脚的控制。由于一个单独的管脚控制器可能被几个GPIO范围复用（典型的，SOC系统有一个管脚集合，但内部几个GPIO模块，每个作为一个gpio_chip模块化），GPIO范围的任意号码可以增加到一个管脚控制器，如下：
+struct gpio_chip chip_a;
+struct gpio_chip chip_b;
+
+static struct pinctrl_gpio_range gpio_range_a = {
+	.name = "chip a",
+	.id = 0,
+	.base = 32,
+	.pin_base = 32,
+	.npins = 16,
+	.gc = &chip_a;
+};
+
+static struct pinctrl_gpio_range gpio_range_b = {
+	.name = "chip b",
+	.id = 0,
+	.base = 48,
+	.pin_base = 64,
+	.npins = 8,
+	.gc = &chip_b;
+};
+
+{
+	struct pinctrl_dev *pctl;
+	...
+	pinctrl_add_gpio_range(pctl, &gpio_range_a);
+	pinctrl_add_gpio_range(pctl, &gpio_range_b);
+}
+
+
+这样，这个复杂系统由一个管脚控制器处理2个不同的GPIO chip。“chip a”有16个管脚，“chip b”有8个管脚。“chip a”和“chip b”具有不同的.pin_base，作为GPIO范围的一个起始管脚号码。
+
+“chip a”的GPIO范围始于32，实际管脚范围也始于32。虽然如此“chip b”的GPIO起始偏移与管脚范围的起始不同。“chip b”的GPIO范围始于48，管脚起始于64。
+
+我们可以使用这个pin_base将GPIO好转换到实际的管脚号。它们映射到全局GPIO空间：
+
+chip a:
+ - GPIO range : [32 .. 47]
+ - pin range  : [32 .. 47]
+chip b:
+ - GPIO range : [48 .. 55]
+ - pin range  : [64 .. 71]
+
+当管脚控制子系统中GPIO特定函数被调用后，这些范围将用于查找合适的管脚控制器，通过检查且匹配管脚到所有控制器的管脚范围。当匹配到一个管脚控制器的处理范围时，GPIO-specific函数在此管脚控制器上被调用。
+
+对于所有处理管脚偏置、管脚复用的函数，管脚控制子系统将从传递给它的gpio号码减去range的.base偏移，然后加上.pin_base偏移以得到一个管脚号码。之后，子系统将它传递到管脚控制驱动，这样驱动可以将一个管脚号码变到它可处理的号码范围。它也传递这个范围ID值，以便管脚控制器知道它应该处理的范围。
+
+PINMUX接口
+=================
+
+
+这些调用使用pinmux_*命名前缀，没有别的调用会使用这个前缀。
+
+
+
+什么是管脚多路复用？
+==================
+
+PINMUX，也称作padmux，ballmux，它是由芯片厂商依据应用，使用一个特定的物理管脚（ball/pad/finger/等等）进行多种扩展复用，以支持不同功能的电气封装的习惯。
+
+下面是一个PGA封装的底视图：
+        A   B   C   D   E   F   G   H
+      +---+
+   8  | o | o   o   o   o   o   o   o
+      |   |
+   7  | o | o   o   o   o   o   o   o
+      |   |
+   6  | o | o   o   o   o   o   o   o
+      +---+---+
+   5  | o | o | o   o   o   o   o   o
+      +---+---+               +---+
+   4    o   o   o   o   o   o | o | o
+                              |   |
+   3    o   o   o   o   o   o | o | o
+                              |   |
+   2    o   o   o   o   o   o | o | o
+      +-------+-------+-------+---+---+
+   1  | o   o | o   o | o   o | o | o |
+      +-------+-------+-------+---+---+
+
+
+这可不是俄罗斯方块，我们可以联想到国际象棋。并不是所有的PGA/BGA封装看起来都像国际象棋棋盘，大型芯片的布置基于不同的设计模式。我们使用这作为一个简单的例子。你可以看到有一些管脚用于VCC和GND，给芯片供电，相当多的一部分作为大型端口如一个外部存储器接口，剩余的管脚通常用于管脚复用。
+
+上述的8X8BGA封装的例子将0~63号分配给物理管脚。它使用pinctrl_register_pins()和一个已经声明的合适的数据集合来命名这些管脚{ A1, A2, A3 ... H6, H7, H8 }
+
+在这个8X8BGA封装中，管脚{ A8, A7, A6, A5 } 可以被用作一个SPI端口（具有四个管脚：CLK、RXD、TXD、FRM）。这个情况下，B5管脚可以被用作GPIO管脚。同时，管脚{A5，B5}也可以可以被用于I2C端口（仅有两个管脚：SCL、SDA）。可以看出，我们无法同时使用SPI端口和I2C端口。然而内部逻辑也可以将SPI逻辑路由到管脚{ G4, G3, G2, G1 }。
+
+在最低行{ A1, B1, C1, D1, E1, F1, G1, H1 }，它可以作为一个外部MMC总线，可以是2、4、8位宽，相应的要使用2、4、8个管脚，{A1，B1}、{ A1, B1, C1, D1 }或是整行。同样如果我们使用8位，我们就不能在管脚{ G4, G3, G2, G1 }上使用SPI端口。
+
+芯片使用这个方法将不同的功能多路复用到不同管脚的范围。现在的SOC系统会包含几个I2C、SPI、SDIO/MMC等功能块，它们可以通过管脚多路复用设置被路由到不同的管脚。
+
+因为GPIO常常不足，通常会将所有当前未被使用的管脚用作GPIO。
+
+pinmux复用约定
+==================
+
+ponctrl子系统中的pinmux功能为你的机器配置中选择的设备抽象并提供pinmux设置。设备将请求它们的多路复用设置，但是申请一个单独的管脚也是可能的，如GPIO。
+定义:
+
+- 功能块可以通过pinctrl子系统目录drivers/pinctrl/* 中的驱动连同或断开。管脚控制驱动知道可能的功能。在上面的例子中，你可以标识3个pinmux函数，一个SPI，一个I2C和一个MMC。
+
+-功能块从0开始枚举，并被分配到一个无限数组中。上述例子中，数组可以是：{spi0，i2c0，mmc0}3个有效的功能。
+- 	功能块具有在在通用类层级（generic level）定义的管脚组--这样驱动的功能总是与确定管脚组集合（可以仅仅是一个，也可以是多个）相联系。上面例子中，I2C与管脚{ A5, B5 }联系，作为{ 24, 25 }在控制器管脚空间枚举。
+  	spi功能与管脚组{ A8, A7, A6, A5 }和{ G4, G3, G2, G1 }联系，对应被枚举为{ 0, 8, 16, 24 }和{ 38, 46, 54, 62 }。
+  
+  每个管脚控制器的组名必须是独一无二的，同一个管脚控制器的的两个组不能具有相同的名字。
+
+- 	功能和管脚组的组合决定了一个特定功能和一个特定管脚集合。功能和管脚组的知识信息及它们的machine-specific细节保持在pinmux驱动中，外界只知道枚举成员且驱动核心可以：
+  - 使用一个确定selector(>= 0)申请一个功能的名字。
+  - 得到与一个确定功能相联系的一个组列表
+  - 为一个确定的功能在列表中激活一个确定的管脚组
+
+
+	如上述，管脚组轮流自举，这样核心将从驱动中取回一个确定组的实际的管脚范围。
+- 一个确定管脚控制器上的FUNCTIONS和GROUPS通过一个板级文件、设备树或是类似的机器setup配置机制 被映射到到一个特定的设备，和一个regulator如何被连接到一个设备相似，通常是通过名字。定义一个管脚控制器，功能和组从而独一无二的标识被特定设备使用的管脚集。（如果只有一个可能的管脚组对于此功能有效，不需要提供组名--核心代码将选择第一个且只有一个有效的组）
+
+	在例子中，我们可以定义这个特定的机器应该使用设备spi0（pinmux功能fspi0组gspi0）和i2c0（fi2c0和gi2c0），在主要的管脚控制器上，我们有下面的映射：
+  {
+    {"map-spi0", spi0, pinctrl0, fspi0, gspi0},
+    {"map-i2c0", i2c0, pinctrl0, fi2c0, gi2c0}
+  }
+
+  
+每个映射必须被分一个正式名字、管脚控制器、设备和功能。组成员不是必须的，如果它被省略，驱动会提供选择功能的第一个组给应用，它对一些简单的情况是有用的。
+  
+映射几个组到同一个设备、管脚控制器和功能的组合是可能的。这是为了那些在一个特定管脚控制器上的一个特定功能可能在不同配置中使用不同的管脚集合。
+- 对于一个特定的功能使用的管脚，一个特定管脚控制器上的一个特定的管脚组依据先来先得原理提供，这样加入一些别的设备复用设置或是GPIO管脚申请已经获取你的物理管脚，你将拒绝后续的使用申请。要得到一个新的设置，旧的要先被释放。
+
+有时，文档和硬件寄存器是面向pad或是finger而不是管脚---这些是封装内部硅芯片的焊接面，且可能或不能匹配外壳下面的pin/ball的实际号码。选择一些对你有意义的枚举方式。仅对你可以控制的管脚在它起作用时定义枚举成员。
+
+假定:
+
+
+我们假定可能映射到管脚组的功能数目被硬件限制。例如，我们假设没有系统可以像电话交换一样将任意功能映射到任意管脚。这样，对于一个特定功能有效的管脚组将被限制到一些比较少选择（例如达到8个这样），而不是几百个或是任何大额的选择。这是我们在有效pinmux硬件上检查得到的特色，且一个必须的假设源于我们期望pinmux驱动为映射到子系统的管脚组提供所有可能的功能。
+
+
+Pinmux驱动
+==============
+
+
+pinmux核心注意管脚上的冲突并且调用管脚控制器驱动以执行不同的设置。
+
+pinmux驱动有对管脚申请的功能是否可以被实际允许且以防执行申请的多路复用设置击穿硬件。
+
+pinmux驱动被要求支持一些回调函数，一些是可选的。通常enable()和disable()函数被实现，通常是写值到一个一些特定的寄存器以激活一个特定管脚的特定多路复用设置。
+
+上面例子的一个简单的驱动将通过设置一些名为MUX寄存器中位0, 1, 2, 3 or 4来选择一个特定的功能和一个特定的管脚组将如下工作：
+#include <linux/pinctrl/pinctrl.h>
+#include <linux/pinctrl/pinmux.h>
+
+struct foo_group {
+	const char *name;
+	const unsigned int *pins;
+	const unsigned num_pins;
+};
+
+static const unsigned spi0_0_pins[] = { 0, 8, 16, 24 };
+static const unsigned spi0_1_pins[] = { 38, 46, 54, 62 };
+static const unsigned i2c0_pins[] = { 24, 25 };
+static const unsigned mmc0_1_pins[] = { 56, 57 };
+static const unsigned mmc0_2_pins[] = { 58, 59 };
+static const unsigned mmc0_3_pins[] = { 60, 61, 62, 63 };
+
+static const struct foo_group foo_groups[] = {
+	{
+		.name = "spi0_0_grp",
+		.pins = spi0_0_pins,
+		.num_pins = ARRAY_SIZE(spi0_0_pins),
+	},
+	{
+		.name = "spi0_1_grp",
+		.pins = spi0_1_pins,
+		.num_pins = ARRAY_SIZE(spi0_1_pins),
+	},
+	{
+		.name = "i2c0_grp",
+		.pins = i2c0_pins,
+		.num_pins = ARRAY_SIZE(i2c0_pins),
+	},
+	{
+		.name = "mmc0_1_grp",
+		.pins = mmc0_1_pins,
+		.num_pins = ARRAY_SIZE(mmc0_1_pins),
+	},
+	{
+		.name = "mmc0_2_grp",
+		.pins = mmc0_2_pins,
+		.num_pins = ARRAY_SIZE(mmc0_2_pins),
+	},
+	{
+		.name = "mmc0_3_grp",
+		.pins = mmc0_3_pins,
+		.num_pins = ARRAY_SIZE(mmc0_3_pins),
+	},
+};
+
+
+static int foo_list_groups(struct pinctrl_dev *pctldev, unsigned selector)
+{
+	if (selector >= ARRAY_SIZE(foo_groups))
+		return -EINVAL;
+	return 0;
+}
+
+static const char *foo_get_group_name(struct pinctrl_dev *pctldev,
+				       unsigned selector)
+{
+	return foo_groups[selector].name;
+}
+
+static int foo_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
+			       unsigned ** const pins,
+			       unsigned * const num_pins)
+{
+	*pins = (unsigned *) foo_groups[selector].pins;
+	*num_pins = foo_groups[selector].num_pins;
+	return 0;
+}
+
+static struct pinctrl_ops foo_pctrl_ops = {
+	.list_groups = foo_list_groups,
+	.get_group_name = foo_get_group_name,
+	.get_group_pins = foo_get_group_pins,
+};
+
+struct foo_pmx_func {
+	const char *name;
+	const char * const *groups;
+	const unsigned num_groups;
+};
+
+static const char * const spi0_groups[] = { "spi0_1_grp" };
+static const char * const i2c0_groups[] = { "i2c0_grp" };
+static const char * const mmc0_groups[] = { "mmc0_1_grp", "mmc0_2_grp",
+					"mmc0_3_grp" };
+
+static const struct foo_pmx_func foo_functions[] = {
+	{
+		.name = "spi0",
+		.groups = spi0_groups,
+		.num_groups = ARRAY_SIZE(spi0_groups),
+	},
+	{
+		.name = "i2c0",
+		.groups = i2c0_groups,
+		.num_groups = ARRAY_SIZE(i2c0_groups),
+	},
+	{
+		.name = "mmc0",
+		.groups = mmc0_groups,
+		.num_groups = ARRAY_SIZE(mmc0_groups),
+	},
+};
+
+int foo_list_funcs(struct pinctrl_dev *pctldev, unsigned selector)
+{
+	if (selector >= ARRAY_SIZE(foo_functions))
+		return -EINVAL;
+	return 0;
+}
+
+const char *foo_get_fname(struct pinctrl_dev *pctldev, unsigned selector)
+{
+	return foo_functions[selector].name;
+}
+
+static int foo_get_groups(struct pinctrl_dev *pctldev, unsigned selector,
+			  const char * const **groups,
+			  unsigned * const num_groups)
+{
+	*groups = foo_functions[selector].groups;
+	*num_groups = foo_functions[selector].num_groups;
+	return 0;
+}
+
+int foo_enable(struct pinctrl_dev *pctldev, unsigned selector,
+		unsigned group)
+{
+	u8 regbit = (1 << selector + group);
+
+	writeb((readb(MUX)|regbit), MUX)
+	return 0;
+}
+
+void foo_disable(struct pinctrl_dev *pctldev, unsigned selector,
+		unsigned group)
+{
+	u8 regbit = (1 << selector + group);
+
+	writeb((readb(MUX) & ~(regbit)), MUX)
+	return 0;
+}
+
+struct pinmux_ops foo_pmxops = {
+	.list_functions = foo_list_funcs,
+	.get_function_name = foo_get_fname,
+	.get_function_groups = foo_get_groups,
+	.enable = foo_enable,
+	.disable = foo_disable,
+};
+
+/* Pinmux operations are handled by some pin controller */
+static struct pinctrl_desc foo_desc = {
+	...
+	.pctlops = &foo_pctrl_ops,
+	.pmxops = &foo_pmxops,
+};
+
+
+例子中，同时激活多路复用0和1设置位0和1，使用一个共同的管脚将导致冲突。
+
+pinmux子系统保持了所有管脚的轨迹和谁正在使用它们，它也将拒绝一个不能实现的申请，这样驱动就不用担心管脚冲突。因此位0和1将永远不会同时设置。
+
+所有上述的函数强制由pinmux驱动实现
+
+管脚控制接口与GPIO子系统交互
+===============================================
+
+
+公开的pinmuxAPI包含两个函数：pinctrl_request_gpio()和pinctrl_free_gpio()。这两个函数仅可以从基于gpiolib的驱动中作为它们的gpio_request()和gpio_free()函数语义的一部分调用。同样pinctrl_gpio_direction_[input|output]也只能在对应的gpiolib中的gpio_direction_[input|output]函数调用。
+
+注意，平台和单独的驱动不能申请控制一个GPIO管脚。而要实现一个适当的gpiolib驱动且使得驱动为它的管脚申请适当的多路复用及别的控制。
+
+功能列表可能变的很长，特别是如果你能转换每个独立的管脚到一个独立于任意别的管脚的GPIO管脚，且接下来尝试定义每个管脚作为一个功能的情况下。
+
+在这种情况下，对于每个GPIO设置和设备功能（函数）功能阵列会变为64条。
+
+基于此，管脚控制驱动可以实现两个函数在一个独立管脚上仅使能GPIO：.gpio_request_enable()和.gpio_disable_free()。
+
+这个函数将进入影响的GPIO范围（被管脚控制器核心标识），这样你就知道哪个GPIO管脚被申请函数影响。
+
+如果你的驱动需要架构关于GPIO管脚应该用作输入或输出的指示，你可以实现.gpio_set_direction()函数。这个函数从gpiolib驱动调用。
+
+交替地使用这些特殊的函数，它完全允许为每个GPIO管脚使用命名函数，如果没有注册特殊的GPIO处理函数，pinctrl_request_gpio()将尝试获取功能（函数）"gpioN"。
+
+
+单板/机器 配置
+==================================
+
+单板和机器定义一个运行的系统如何组合在一起，包括GPIO和设备如何多路复用，regulator如何限制和时钟树如何看。当然pinmux设置也是这个的一部分。
+
+
+为一个机器配置的一个管脚控制器看起来相当像一个简单regulator配置，对于上面的例子来说如果我们想要在第二个功能映射上使能i2c和spi：
+#include <linux/pinctrl/machine.h>
+
+static const struct pinctrl_map __initdata mapping[] = {
+	{
+		.dev_name = "foo-spi.0",
+		.name = PINCTRL_STATE_DEFAULT,
+		.type = PIN_MAP_TYPE_MUX_GROUP,
+		.ctrl_dev_name = "pinctrl-foo",
+		.data.mux.function = "spi0",
+	},
+	{
+		.dev_name = "foo-i2c.0",
+		.name = PINCTRL_STATE_DEFAULT,
+		.type = PIN_MAP_TYPE_MUX_GROUP,
+		.ctrl_dev_name = "pinctrl-foo",
+		.data.mux.function = "i2c0",
+	},
+	{
+		.dev_name = "foo-mmc.0",
+		.name = PINCTRL_STATE_DEFAULT,
+		.type = PIN_MAP_TYPE_MUX_GROUP,
+		.ctrl_dev_name = "pinctrl-foo",
+		.data.mux.function = "mmc0",
+	},
+};
+
+这里的dev_name与独一的设备名字匹配，可以被用于查找相关的device结构体（就像clockdev或是regulator）。函数名必须匹配pinmux驱动提供的函数处理这个管脚范围。
+
+就像你看到的，我们可能在系统上具有几个管脚控制器，因此我们需要指出它们中的哪个包含我们希望映射的功能。
+
+你可以简单地注册这个pinmux映射到pinmux子系统：
+       ret = pinctrl_register_mappings(mapping, ARRAY_SIZE(mapping));
+
+
+由于上面的限制是相当常用的，有一个宏可以帮助使它更加紧凑，例如，假设你想要使用pinctrl-foo和0位置映射：
+static struct pinctrl_map __initdata mapping[] = {
+	PIN_MAP_MUX_GROUP("foo-i2c.o", PINCTRL_STATE_DEFAULT, "pinctrl-foo", NULL, "i2c0"),
+};
+
+映射表也可能包含管脚配置条目。每个管脚/组具有一些配置条目来影响它是常见的，所以这个关于配置的表条目引用一个配置参数和值的数组。使用这个宏的一个例子如下：
+static unsigned long i2c_grp_configs[] = {
+	FOO_PIN_DRIVEN,
+	FOO_PIN_PULLUP,
+};
+
+static unsigned long i2c_pin_configs[] = {
+	FOO_OPEN_COLLECTOR,
+	FOO_SLEW_RATE_SLOW,
+};
+
+static struct pinctrl_map __initdata mapping[] = {
+	PIN_MAP_MUX_GROUP("foo-i2c.0", PINCTRL_STATE_DEFAULT, "pinctrl-foo", "i2c0", "i2c0"),
+	PIN_MAP_MUX_CONFIGS_GROUP("foo-i2c.0", PINCTRL_STATE_DEFAULT, "pinctrl-foo", "i2c0", i2c_grp_configs),
+	PIN_MAP_MUX_CONFIGS_PIN("foo-i2c.0", PINCTRL_STATE_DEFAULT, "pinctrl-foo", "i2c0scl", i2c_pin_configs),
+	PIN_MAP_MUX_CONFIGS_PIN("foo-i2c.0", PINCTRL_STATE_DEFAULT, "pinctrl-foo", "i2c0sda", i2c_pin_configs),
+};
+
+
+最后，一些设备期望映射表包含某个特定命名状态。当在一个不需要任何管脚控制器配置的硬件上运行时，映射表仍必须包含那些命名状态，为了显式指出这些状态被提供且将要为空。表条目宏PIN_MAP_DUMMY_STATE为这个目的服务，定义一个命名状态，而不引发任何管脚控制器被编程。
+static struct pinctrl_map __initdata mapping[] = {
+	PIN_MAP_DUMMY_STATE("foo-i2c.0", PINCTRL_STATE_DEFAULT),
+};
+
+
+
+复杂映射
+================
+
+
+由于映射一个函数到不同的组是可能的，一个可选的.group可以如下指定：
+...
+{
+	.dev_name = "foo-spi.0",
+	.name = "spi0-pos-A",
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "spi0",
+	.group = "spi0_0_grp",
+},
+{
+	.dev_name = "foo-spi.0",
+	.name = "spi0-pos-B",
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "spi0",
+	.group = "spi0_1_grp",
+},
+...
+
+
+这个例子映射用于运行时spi0在两个位置转换，如后面“运行时管脚复用”所述。
+
+更进一步，一个命名state影响几组管脚的多路复用是可能的，像上面的mmc0例子所说，你可以轮流扩展mmc0总线为2、4、8位。如果我们想要使用所有的3组共2+2+4 = 8 管脚（对于一个8位MMC总线情况，我们定义一个映射如下）：
+...
+{
+	.dev_name = "foo-mmc.0",
+	.name = "2bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_1_grp",
+},
+{
+	.dev_name = "foo-mmc.0",
+	.name = "4bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_1_grp",
+},
+{
+	.dev_name = "foo-mmc.0",
+	.name = "4bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_2_grp",
+},
+{
+	.dev_name = "foo-mmc.0",
+	.name = "8bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_1_grp",
+},
+{
+	.dev_name = "foo-mmc.0",
+	.name = "8bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_2_grp",
+},
+{
+	.dev_name = "foo-mmc.0",
+	.name = "8bit"
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "mmc0",
+	.group = "mmc0_3_grp",
+},
+...
+
+
+从设备抓取映射的结果支持下面：
+
+	p = pinctrl_get(dev);
+	s = pinctrl_lookup_state(p, "8bit");
+	ret = pinctrl_select_state(p, s);
+
+或是更简单的:
+
+	p = pinctrl_get_select(dev, "8bit");
+
+
+将是你一次在映射中激活所有的3个底层记录。由于它们分享相同的名字且我们允许多个组匹配一个单独的设备，管脚控制器设备，函数，和设备，它们都被选择，且它们都同时的被pinmux核使能或禁止。
+
+
+来自驱动pinmux请求
+============================
+
+
+通常不鼓励让一个独立的驱动获取和使能管脚控制。所以，如果可能的话，在平台代码中或别的你有权访问所有受到影响的结构device *指针的地方处理管脚控制。在一些情况下，一个驱动需要运行时在不同的多路复用映射间转换，上述方法就不能支持了。
+
+一个驱动可能请求激活一个确定的控制状态，常常仅是默认的状态，如下：
+#include <linux/pinctrl/consumer.h>
+
+struct foo_state {
+       struct pinctrl *p;
+       struct pinctrl_state *s;
+       ...
+};
+
+foo_probe()
+{
+	/* Allocate a state holder named "foo" etc */
+	struct foo_state *foo = ...;
+
+	foo->p = pinctrl_get(&device);
+	if (IS_ERR(foo->p)) {
+		/* FIXME: clean up "foo" here */
+		return PTR_ERR(foo->p);
+	}
+
+	foo->s = pinctrl_lookup_state(foo->p, PINCTRL_STATE_DEFAULT);
+	if (IS_ERR(foo->s)) {
+		pinctrl_put(foo->p);
+		/* FIXME: clean up "foo" here */
+		return PTR_ERR(s);
+	}
+
+	ret = pinctrl_select_state(foo->s);
+	if (ret < 0) {
+		pinctrl_put(foo->p);
+		/* FIXME: clean up "foo" here */
+		return ret;
+	}
+}
+
+foo_remove()
+{
+	pinctrl_put(state->p);
+}
+
+
+这个get/lookup/select/put序列正好可以被总线驱动完好处理，如果你不想要每个驱动都处理它且你知道关于你的总线的布置的话。
+
+pinctrl API的语义如下
+-pinctrl_get()在进程上下文中调用，用于为一个给定客户设备获取到所有pinctrl信息的句柄。它将从内核存储器分配一个结构体来保持pinmux状态。所有的映射表解析或类似的慢速操作在这个API中完成。
+
+- pinctrl_lookup_state()
+在进程上下文中调用以便为客户设备获取一个到给定state的句柄。这个操作也可能比较慢。
+
+-pinctrl_select_state()依据映射表给出的state的定义来编程管脚控制器硬件。理论上，这是一个快速通道操作，因为它仅引入一些硬件中的寄存器设置。虽然如此，注意一些管脚控制器可能具有它们自己的寄存器在一个慢速/基于中断的总线上，这样，客户设备不应假设它们可以从一个非阻塞上下文中调用此函数
+
+- pinctrl_put() 释放所有与此句柄相联系的信息。
+
+
+通常，管脚控制核心处理get/put对，且向外调用设备驱动bookkeeping操作，如检查有效的函数和相关的管脚，反之，enable/disable传递给管脚控制器驱动（通过快速设置一些寄存器管理激活和/或禁止多路复用）。
+
+管脚为你的设备分配，当你执行pinctrl_get()调用时，此后，你应该可以在debugfs中看到所有的管脚列表。
+
+系统管脚控制轴（hogging）
+==========================
+
+管脚控制映射条目在管脚控制器注册时可以被核心使用。这意味着core将在管脚控制设备注册之后立即尝试在其上调用pinctrl_get()，lookup_state()和select_state()。
+
+这发生在映射表条目客户设备名与管脚控制设备名相同，且state名是PINCTRL_STATE_DEFAULT时。
+{
+	.dev_name = "pinctrl-foo",
+	.name = PINCTRL_STATE_DEFAULT,
+	.type = PIN_MAP_TYPE_MUX_GROUP,
+	.ctrl_dev_name = "pinctrl-foo",
+	.function = "power_func",
+},
+
+因为申请核心在首要管脚控制器上使用一些总是可以应用的多路复用设置是常见的，有一个便利的宏用于此：
+PIN_MAP_MUX_GROUP_HOG_DEFAULT("pinctrl-foo", NULL /* group */, "power_func")
+
+这个给出的结果与上面的解释完全一致。
+
+
+实时管脚复用
+=================
+
+在运行时设置多路复用一个特定功能in/out是可能的，例如移动一个spi端口从一个管脚集另一个管脚集。上面的spi0就是一个例子，我们为同样的功能暴露了两组不同的管脚，但是在映射中使用不同的名字。这样对于一个SPI设备，我们具有两个状态名为“pos-A”和“pos-B”。
+
+下面这段代码首先多路复用此功能到组A定义的管脚，使能、禁止、然后释放，接下来多路复用它到B组定义的管脚：
+#include <linux/pinctrl/consumer.h>
+
+foo_switch()
+{
+	struct pinctrl *p;
+	struct pinctrl_state *s1, *s2;
+
+	/* Setup */
+	p = pinctrl_get(&device);
+	if (IS_ERR(p))
+		...
+
+	s1 = pinctrl_lookup_state(foo->p, "pos-A");
+	if (IS_ERR(s1))
+		...
+
+	s2 = pinctrl_lookup_state(foo->p, "pos-B");
+	if (IS_ERR(s2))
+		...
+
+	/* Enable on position A */
+	ret = pinctrl_select_state(s1);
+	if (ret < 0)
+	    ...
+
+	...
+
+	/* Enable on position B */
+	ret = pinctrl_select_state(s2);
+	if (ret < 0)
+	    ...
+
+	...
+
+	pinctrl_put(p);
+}
+
+上述代码已经在进程上下文中完成。

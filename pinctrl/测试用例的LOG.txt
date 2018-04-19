@@ -1,0 +1,742 @@
+AccessTime = 50 ns , CycleTiming = 6 ns FMWAIT @0x10a2
+
+?K310B?DR Version 1.04 20130517
+In
+SRX
+DDR3
+300MHz
+Bus Width=32 Col=10 Bank=8 Row=15 CS=1 Die Bus-Width=16 Size=1024MB
+OUT
+BUILD=====5
+Loader flag is ture
+SdmmcInit=2 0
+FwPartOffset=2000 , 0
+OK! 89758
+unsigned!
+SecureBootEn = 0 0
+Boot ver: 2013-05-18#1.20
+UsbBoot,101202
+UsbHook,754105
+powerOn,851078
+ 937036 UsbConnected
+ 1131641 UsbConnected
+ 1274265 UsbConnected
+?K310B?DR Version 1.04 20130517
+In
+SRX
+DDR3
+300MHz
+Bus Width=32 Col=10 Bank=8 Row=15 CS=1 Die Bus-Width=16 Size=1024MB
+OUT
+BUILD=====5
+SdmmcInit=2 0
+FwPartOffset=2000 , 0
+OK! 127998
+unsigned!
+SecureBootEn = 0 0
+Boot ver: 2013-05-18#1.20
+start_linux=====140002
+ 596843 Starting kernel...@0x60408000
+
+<hit enter to activate fiq debugger>
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Initializing cgroup subsys cpu
+[    0.000000] Initializing cgroup subsys cpuacct
+[    0.000000] Linux version 3.10.0 (root@lw-HP-dx2818-MT) (gcc version 4.6.x-google 20120106 (prerelease) (GCC) ) #188 SMP PREEMPT Mon Dec 16 20:54:37 CST 2013
+[    0.000000] CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=10c53c7d
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+[    0.000000] Machine: Rockchip RK3188 (Flattened Device Tree), model: rockchip,rk3188
+[    0.000000] cma: CMA: reserved 16 MiB at 8e800000
+[    0.000000] Memory policy: ECC disabled, Data cache writealloc
+[    0.000000] PERCPU: Embedded 9 pages/cpu @c16ad000 s14592 r8192 d14080 u36864
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 260624
+[    0.000000] Kernel command line:  console=ttyFIQ0 androidboot.console=ttyFIQ0 init=/init initrd=0x62000000,0x00130000 mtdparts=rk29xxnand:0x00002000@0x00002000(misc),0x00006000@0x00004000(kernel),0x00008000@0x0000A000(boot),0x00010000@0x00012000(recovery),0x00020000@0x00022000(backup),0x00040000@0x00042000(cache),0x00002000@0x00082000(kpanic),0x00200000@0x00084000(system),0x00100000@0x00284000(cust),-@0x00384000(userdata) bootver=2013-05-18#1.20 firmware_ver=4.1.1
+[    0.000000] PID hash table entries: 4096 (order: 2, 16384 bytes)
+[    0.000000] Dentry cache hash table entries: 131072 (order: 7, 524288 bytes)
+[    0.000000] Inode-cache hash table entries: 65536 (order: 6, 262144 bytes)
+[    0.000000] Memory: 1024MB = 1024MB total
+[    0.000000] Memory: 1006780k/1006780k available, 41796k reserved, 270336K highmem
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+[    0.000000]     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+[    0.000000]     vmalloc : 0xf0000000 - 0xff000000   ( 240 MB)
+[    0.000000]     lowmem  : 0xc0000000 - 0xef800000   ( 760 MB)
+[    0.000000]     pkmap   : 0xbfe00000 - 0xc0000000   (   2 MB)
+[    0.000000]     modules : 0xbf000000 - 0xbfe00000   (  14 MB)
+[    0.000000]       .text : 0xc0008000 - 0xc07e4a2c   (8051 kB)
+[    0.000000]       .init : 0xc07e5000 - 0xc0834900   ( 319 kB)
+[    0.000000]       .data : 0xc0836000 - 0xc089f3e8   ( 421 kB)
+[    0.000000]        .bss : 0xc089f3e8 - 0xc0e8f618   (6081 kB)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[    0.000000] Preemptible hierarchical RCU implementation.
+[    0.000000]  RCU dyntick-idle grace-period acceleration is enabled.
+[    0.000000] NR_IRQS:16 nr_irqs:16 16
+[    0.000000] sched_clock: 32 bits at 24MHz, resolution 41ns, wraps every 178956ms
+[    0.000000] Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar
+[    0.000000] ... MAX_LOCKDEP_SUBCLASSES:  8
+[    0.000000] ... MAX_LOCK_DEPTH:          48
+[    0.000000] ... MAX_LOCKDEP_KEYS:        8191
+[    0.000000] ... CLASSHASH_SIZE:          4096
+[    0.000000] ... MAX_LOCKDEP_ENTRIES:     16384
+[    0.000000] ... MAX_LOCKDEP_CHAINS:      32768
+[    0.000000] ... CHAINHASH_SIZE:          16384
+[    0.000000]  memory used by lock dependency info: 3695 kB
+[    0.000000]  per task-struct memory footprint: 1152 bytes
+[    0.001052] Calibrating delay loop (skipped) preset value.. 1199.60 BogoMIPS (lpj=5998045)
+[    0.001084] pid_max: default: 32768 minimum: 301
+[    0.003101] Security Framework initialized
+[    0.003137] SELinux:  Initializing.
+[    0.004403] Mount-cache hash table entries: 512
+[    0.015806] Initializing cgroup subsys debug
+[    0.015945] Initializing cgroup subsys freezer
+[    0.016921] CPU: Testing write buffer coherency: ok
+[    0.020956] CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
+[    0.021824] Setting up static identity map for 0xc05b2458 - 0xc05b24b0
+[    0.022465] L310 cache controller enabled
+[    0.022491] l2x0: 16 ways, CACHE_ID 0x4100c0c8, AUX_CTRL 0x76050001, Cache size: 524288 B
+[    0.104001] CPU1: Booted secondary processor
+[    0.104022] CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
+[    0.123649] CPU2: Booted secondary processor
+[    0.123670] CPU2: thread -1, cpu 2, socket 0, mpidr 80000002
+[    0.143408] CPU3: Booted secondary processor
+[    0.143427] CPU3: thread -1, cpu 3, socket 0, mpidr 80000003
+[    0.143734] Brought up 4 CPUs
+[    0.143783] SMP: Total of 4 processors activated (4798.43 BogoMIPS).
+[    0.143795] CPU: All CPU(s) started in SVC mode.
+[    0.237186] pinctrl core: initialized pinctrl subsystem
+[    0.243591] regulator-dummy: no parameters
+[    0.248400] NET: Registered protocol family 16
+[    0.255933] DMA: preallocated 256 KiB pool for atomic coherent allocations
+[    0.256288] Registered FIQ tty driver
+[    0.684897] console [ttyFIQ0] enabled
+[    0.690376] Registered fiq debugger ttyFIQ0
+[    0.703318] rockchip_interrupts_register:bank=0
+[    0.707979] rockchip_interrupts_register:bank=1
+[    0.712579] rockchip_interrupts_register:bank=2
+[    0.717209] rockchip_interrupts_register:bank=3
+[    0.721806] rockchip_interrupts_register:bank=4
+[    0.737030] rockchip_pinctrl_parse_functions:parse function(0): pcfg_pull_up
+[    0.744131] rockchip_pinctrl_parse_functions:parse function(1): pcfg_pull_down
+[    0.751348] rockchip_pinctrl_parse_functions:parse function(2): pcfg_pull_none
+[    0.758601] rockchip_pinctrl_parse_functions:parse function(3): gpio1_uart0
+[    0.765884] rockchip_pinctrl_parse_groups:group(0): uart0-xfer
+[    0.771868] rockchip_pinctrl_parse_groups:group(1): uart0-cts
+[    0.777749] rockchip_pinctrl_parse_groups:group(2): uart0-rts
+[    0.783628] rockchip_pinctrl_parse_functions:parse function(4): gpio1_uart1
+[    0.790639] rockchip_pinctrl_parse_groups:group(0): uart1-xfer
+[    0.796651] rockchip_pinctrl_parse_groups:group(1): uart1-cts
+[    0.802498] rockchip_pinctrl_parse_groups:group(2): uart1-rts
+[    0.808378] rockchip_pinctrl_parse_functions:parse function(5): gpio1_uart2
+[    0.815400] rockchip_pinctrl_parse_groups:group(0): uart2-xfer
+[    0.821375] rockchip_pinctrl_parse_functions:parse function(6): gpio1_uart3
+[    0.828415] rockchip_pinctrl_parse_groups:group(0): uart3-xfer
+[    0.834427] rockchip_pinctrl_parse_groups:group(1): uart3-cts
+[    0.840275] rockchip_pinctrl_parse_groups:group(2): uart3-rts
+[    0.846158] rockchip_pinctrl_parse_functions:parse function(7): gpio1_i2c0
+[    0.853066] rockchip_pinctrl_parse_groups:group(0): i2c0-sda
+[    0.858854] rockchip_pinctrl_parse_groups:group(1): i2c0-scl
+[    0.864663] rockchip_pinctrl_parse_functions:parse function(8): gpio1_i2c1
+[    0.871572] rockchip_pinctrl_parse_groups:group(0): i2c1-sda
+[    0.877369] rockchip_pinctrl_parse_groups:group(1): i2c1-scl
+[    0.883133] rockchip_pinctrl_parse_functions:parse function(9): gpio1_i2c2
+[    0.890073] rockchip_pinctrl_parse_groups:group(0): i2c2-sda
+[    0.895861] rockchip_pinctrl_parse_groups:group(1): i2c2-scl
+[    0.901623] rockchip_pinctrl_parse_functions:parse function(10): gpio1_i2c3
+[    0.908661] rockchip_pinctrl_parse_groups:group(0): i2c3-sda
+[    0.914457] rockchip_pinctrl_parse_groups:group(1): i2c3-scl
+[    0.920224] rockchip_pinctrl_parse_functions:parse function(11): gpio1_i2c4
+[    0.927248] rockchip_pinctrl_parse_groups:group(0): i2c4-sda
+[    0.933008] rockchip_pinctrl_parse_groups:group(1): i2c4-scl
+[    0.938800] rockchip_pinctrl_parse_functions:parse function(12): gpio1_spi0
+[    0.945828] rockchip_pinctrl_parse_groups:group(0): spi0-txd
+[    0.951602] rockchip_pinctrl_parse_groups:group(1): spi0-rxd
+[    0.957396] rockchip_pinctrl_parse_groups:group(2): spi0-clk
+[    0.963156] rockchip_pinctrl_parse_groups:group(3): spi0-cs0
+[    0.968946] rockchip_pinctrl_parse_groups:group(4): spi0-cs1
+[    0.974739] rockchip_pinctrl_parse_functions:parse function(13): gpio1_spi1
+[    0.981737] rockchip_pinctrl_parse_groups:group(0): spi1-txd
+[    0.987540] rockchip_pinctrl_parse_groups:group(1): spi1-rxd
+[    0.993302] rockchip_pinctrl_parse_groups:group(2): spi1-clk
+[    0.999095] rockchip_pinctrl_parse_groups:group(3): spi1-cs0
+[    1.004884] rockchip_pinctrl_parse_groups:group(4): spi1-cs1
+[    1.010645] rockchip_pinctrl_parse_functions:parse function(14): gpio1_i2s0
+[    1.017675] rockchip_pinctrl_parse_groups:group(0): i2s0-mclk
+[    1.023568] rockchip_pinctrl_parse_groups:group(1): i2s0-sclk
+[    1.029418] rockchip_pinctrl_parse_groups:group(2): i2s0-lrckrx
+[    1.035469] rockchip_pinctrl_parse_groups:group(3): i2s0-lrcktx
+[    1.041487] rockchip_pinctrl_parse_groups:group(4): i2s0-sdo
+[    1.047275] rockchip_pinctrl_parse_groups:group(5): i2s0-sdi
+[    1.053052] rockchip_pinctrl_parse_functions:parse function(15): gpio3_pwm
+[    1.059998] rockchip_pinctrl_parse_groups:group(0): pwm0
+[    1.065445] rockchip_pinctrl_parse_groups:group(1): pwm1
+[    1.070859] rockchip_pinctrl_parse_groups:group(2): pwm2
+[    1.076301] rockchip_pinctrl_parse_groups:group(3): pwm3
+[    1.081717] rockchip_pinctrl_parse_functions:parse function(16): gpio3_sdio
+[    1.088748] rockchip_pinctrl_parse_groups:group(0): sd0-clk
+[    1.094467] rockchip_pinctrl_parse_groups:group(1): sd0-cmd
+[    1.100144] rockchip_pinctrl_parse_groups:group(2): sd0-cd
+[    1.105763] rockchip_pinctrl_parse_groups:group(3): sd0-wp
+[    1.111347] rockchip_pinctrl_parse_groups:group(4): sd0-pwr
+[    1.117049] rockchip_pinctrl_parse_groups:group(5): sd0-bus-width1
+[    1.123339] rockchip_pinctrl_parse_groups:group(6): sd0-bus-width4
+[    1.129785] rockchip_pinctrl_parse_functions:parse function(17): gpio3_sdmmc
+[    1.136904] rockchip_pinctrl_parse_groups:group(0): sd1-clk
+[    1.142577] rockchip_pinctrl_parse_groups:group(1): sd1-cmd
+[    1.148293] rockchip_pinctrl_parse_groups:group(2): sd1-cd
+[    1.153923] rockchip_pinctrl_parse_groups:group(3): sd1-wp
+[    1.159513] rockchip_pinctrl_parse_groups:group(4): sd1-bus-width1
+[    1.165826] rockchip_pinctrl_parse_groups:group(5): sd1-bus-width4
+[    1.172231] rockchip_pinctrl_parse_functions:parse function(18): gps
+[    1.178649] rockchip_pinctrl_parse_groups:group(0): gps-mag
+[    1.184362] rockchip_pinctrl_parse_groups:group(1): gps-sig
+[    1.190040] rockchip_pinctrl_parse_groups:group(2): gps-rfclk
+[    1.195924] rockchip_pinctrl_parse_functions:parse function(19): vol_domain
+[    1.202928] rockchip_pinctrl_parse_groups:group(0): ap0-vcc
+[    1.208630] rockchip_pinctrl_parse_groups:group(1): ap1-vcc
+[    1.214331] rockchip_pinctrl_parse_groups:group(2): cif-vcc
+[    1.220015] rockchip_pinctrl_parse_groups:group(3): flash-vcc
+[    1.225895] rockchip_pinctrl_parse_groups:group(4): vccio0-vcc
+[    1.231828] rockchip_pinctrl_parse_groups:group(5): vccio1-vcc
+[    1.237790] rockchip_pinctrl_parse_groups:group(6): lcdc0-vcc
+[    1.243664] rockchip_pinctrl_parse_groups:group(7): lcdc1-vcc
+[    1.249514] rockchip_gpio_request:GPIO0-1
+[    1.253726] rockchip_gpio_direction_input:GPIO0-1
+[    1.258447] rockchip_pmx_gpio_set_direction:gpio_direction for pin 1 as gpio0-1 to input
+[    1.266710] rockchip_set_mux:setting GPIO0-1 to mux:0xa10
+[    1.272345] rockchip_gpio_irq_map:irq=160
+[    1.276394] rockchip_gpio_to_irq:virq=160, GPIO0-1
+[    1.281226] rockchip_gpio_irq_set_type:type=1,irq=160,hwirq=1
+[    1.287019] rockchip_set_mux:setting GPIO0-1 to mux:0xa10
+[    1.292421] rockchip_gpio_irq_set_type:type=1,irq=160,hwirq=1,ok
+[    1.298430] rockchip_gpio_irq_unmask:irq=160,hwirq=1,bank->reg_base=0xfed50000,bit=1
+[    1.306909] rockchip_gpio_to_irq:virq=160, GPIO0-1
+[    1.311711] rockchip_gpio_irq_mask:irq=160,hwirq=1,bank->reg_base=0xfed50000,bit=1
+[    1.319313] rockchip_gpio_to_irq:virq=160, GPIO0-1
+[    1.324137] rockchip_gpio_irq_set_wake:irq=160,hwirq=1,bank->reg_base=0xfed50000,bit=1
+[    1.332047] rockchip_pinctrl_probe:init ok
+[    1.354303] hw-breakpoint: found 5 (+1 reserved) breakpoint and 1 watchpoint registers.
+[    1.362307] hw-breakpoint: maximum watchpoint size is 4 bytes.
+[    1.458723] bio: create slab <bio-0> at 0
+[    1.473940] SCSI subsystem initialized
+[    1.480412] usbcore: registered new interface driver usbfs
+[    1.486590] usbcore: registered new interface driver hub
+[    1.492670] usbcore: registered new device driver usb
+[    1.499654] rockchip_pmx_enable:enable function gpio1_i2c0 group i2c0-sda
+[    1.506548] rockchip_set_mux:setting GPIO1-24 to mux:0x1d01
+[    1.512158] rockchip_pinconf_group_set:group[10]:i2c0-sda
+[    1.517562] _rockchip_pinconf_set:GPIO1-24,group=i2c0-sda, function=gpio1_i2c0, type=3
+[    1.525509] _rockchip_pinconf_set:select "gpio1_i2c0"
+[    1.530570] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0x6,value[0]=0x400040
+[    1.538773] rockchip_pinconf_set,pin=56,param=9
+[    1.543337] rockchip_pinconf_group_set:group[10]:i2c0-sda
+[    1.548739] rk3188_calc_pull_reg_and_bit:GPIO1-24, pull_reg=0xfed1017c, bit=14
+[    1.555994] rockchip_set_pull:GPIO1-24 pull is 0xc0000000
+[    1.561424] rockchip_pinconf_set,pin=56,param=0
+[    1.565959] rockchip_pmx_enable:enable function gpio1_i2c0 group i2c0-scl
+[    1.572780] rockchip_set_mux:setting GPIO1-25 to mux:0x1d11
+[    1.578352] rockchip_pinconf_group_set:group[11]:i2c0-scl
+[    1.583783] _rockchip_pinconf_set:GPIO1-25,group=i2c0-scl, function=gpio1_i2c0, type=3
+[    1.591727] _rockchip_pinconf_set:select "gpio1_i2c0"
+[    1.596788] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0x6,value[0]=0x400040
+[    1.604990] rockchip_pinconf_set,pin=57,param=9
+[    1.609522] rockchip_pinconf_group_set:group[11]:i2c0-scl
+[    1.614953] rk3188_calc_pull_reg_and_bit:GPIO1-25, pull_reg=0xfed1017c, bit=12
+[    1.622207] rockchip_set_pull:GPIO1-25 pull is 0x30000000
+[    1.627606] rockchip_pinconf_set,pin=57,param=0
+[    1.633996] rockchip_i2c 2002d000.i2c: cannot get clock
+[    1.639365] rockchip_i2c 2002d000.i2c: set clk(I2C_CLKDIV: 0x00050005)
+[    1.645943] rockchip_i2c 2002d000.i2c: i2c-0: Rockchip I2C adapter
+[    1.653090] rockchip_pmx_enable:enable function gpio1_i2c1 group i2c1-sda
+[    1.659886] rockchip_set_mux:setting GPIO1-26 to mux:0x1d21
+[    1.665499] rockchip_pinconf_group_set:group[12]:i2c1-sda
+[    1.670901] _rockchip_pinconf_set:GPIO1-26,group=i2c1-sda, function=gpio1_i2c1, type=2
+[    1.678850] _rockchip_pinconf_set:select "vccio1-vcc"
+[    1.683940] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0xd,value[0]=0x20002000
+[    1.692402] rockchip_pinconf_set,pin=58,param=13
+[    1.697020] rockchip_pinconf_group_set:group[12]:i2c1-sda
+[    1.702452] _rockchip_pinconf_set:GPIO1-26,group=i2c1-sda, function=gpio1_i2c1, type=3
+[    1.710365] _rockchip_pinconf_set:select "gpio1_i2c1"
+[    1.715468] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0x8,value[0]=0x1000100
+[    1.723760] rockchip_pinconf_set,pin=58,param=9
+[    1.728292] rockchip_pinconf_group_set:group[12]:i2c1-sda
+[    1.733725] rk3188_calc_pull_reg_and_bit:GPIO1-26, pull_reg=0xfed1017c, bit=10
+[    1.740950] rockchip_set_pull:GPIO1-26 pull is 0xc000000
+[    1.746292] rockchip_pinconf_set,pin=58,param=0
+[    1.750825] rockchip_pmx_enable:enable function gpio1_i2c1 group i2c1-scl
+[    1.757646] rockchip_set_mux:setting GPIO1-27 to mux:0x1d31
+[    1.763248] rockchip_pinconf_group_set:group[13]:i2c1-scl
+[    1.768649] _rockchip_pinconf_set:GPIO1-27,group=i2c1-scl, function=gpio1_i2c1, type=2
+[    1.776592] _rockchip_pinconf_set:select "vccio1-vcc"
+[    1.781680] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0xd,value[0]=0x20002000
+[    1.790112] rockchip_pinconf_set,pin=59,param=13
+[    1.794760] rockchip_pinconf_group_set:group[13]:i2c1-scl
+[    1.800160] _rockchip_pinconf_set:GPIO1-27,group=i2c1-scl, function=gpio1_i2c1, type=3
+[    1.808102] _rockchip_pinconf_set:select "gpio1_i2c1"
+[    1.813192] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0x8,value[0]=0x1000100
+[    1.821481] rockchip_pinconf_set,pin=59,param=9
+[    1.826012] rockchip_pinconf_group_set:group[13]:i2c1-scl
+[    1.831442] rk3188_calc_pull_reg_and_bit:GPIO1-27, pull_reg=0xfed1017c, bit=8
+[    1.838579] rockchip_set_pull:GPIO1-27 pull is 0x3000000
+[    1.843921] rockchip_pinconf_set,pin=59,param=0
+[    1.848455] rockchip_pmx_enable:enable function vol_domain group ap0-vcc
+[    1.855185] rockchip_set_mux:error bank num 15 is out of range
+[    1.861017] rockchip_pinconf_group_set:group[56]:ap0-vcc
+[    1.866361] _rockchip_pinconf_set:GPIO15-0,group=ap0-vcc, function=vol_domain, type=2
+[    1.874216] _rockchip_pinconf_set:select "ap0-vcc"
+[    1.879015] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0x8,value[0]=0x1000100
+[    1.887390] rockchip_pinconf_set,pin=128,param=13
+[    1.892127] rockchip_pmx_enable:enable function vol_domain group lcdc1-vcc
+[    1.898998] rockchip_set_mux:error bank num 15 is out of range
+[    1.904861] rockchip_pinconf_group_set:group[63]:lcdc1-vcc
+[    1.910349] _rockchip_pinconf_set:GPIO15-7,group=lcdc1-vcc, function=vol_domain, type=2
+[    1.918378] _rockchip_pinconf_set:select "lcdc1-vcc"
+[    1.923380] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0xf,value[0]=0x80008000
+[    1.931842] rockchip_pinconf_set,pin=135,param=13
+[    1.938091] rockchip_i2c 2002f000.i2c: cannot get clock
+[    1.943383] rockchip_i2c 2002f000.i2c: set clk(I2C_CLKDIV: 0x00050005)
+[    1.949916] rockchip_i2c 2002f000.i2c: i2c-1: Rockchip I2C adapter
+[    1.961902] rockchip_pmx_enable:enable function gpio1_i2c3 group i2c3-sda
+[    1.968703] rockchip_set_mux:setting GPIO3-14 to mux:0x3b62
+[    1.974340] rockchip_pinconf_group_set:group[16]:i2c3-sda
+[    1.979744] _rockchip_pinconf_set:GPIO3-14,group=i2c3-sda, function=gpio1_i2c3, type=3
+[    1.987881] _rockchip_pinconf_set:could find config register for PIN3-14,type=3,num=38
+[    1.995841] rockchip_pinconf_group_set:group[16]:i2c3-sda
+[    2.001278] rk3188_calc_pull_reg_and_bit:GPIO3-14, pull_reg=0xfed10194, bit=2
+[    2.008416] rockchip_set_pull:GPIO3-14 pull is 0xc0000
+[    2.013586] rockchip_pinconf_set,pin=110,param=0
+[    2.018207] rockchip_pmx_enable:enable function gpio1_i2c3 group i2c3-scl
+[    2.025037] rockchip_set_mux:setting GPIO3-15 to mux:0x3b72
+[    2.030610] rockchip_pinconf_group_set:group[17]:i2c3-scl
+[    2.036070] _rockchip_pinconf_set:GPIO3-15,group=i2c3-scl, function=gpio1_i2c3, type=3
+[    2.044029] _rockchip_pinconf_set:could find config register for PIN3-15,type=3,num=38
+[    2.051974] rockchip_pinconf_group_set:group[17]:i2c3-scl
+[    2.057376] rk3188_calc_pull_reg_and_bit:GPIO3-15, pull_reg=0xfed10194, bit=0
+[    2.064544] rockchip_set_pull:GPIO3-15 pull is 0x30000
+[    2.069683] rockchip_pinconf_set,pin=111,param=0
+[    2.075850] rockchip_i2c 20059000.i2c: cannot get clock
+[    2.081094] rockchip_i2c 20059000.i2c: set clk(I2C_CLKDIV: 0x00000000)
+[    2.087671] rockchip_i2c 20059000.i2c: i2c-3: Rockchip I2C adapter
+[    2.095278] rockchip_pmx_enable:enable function gpio1_i2c4 group i2c4-sda
+[    2.102115] rockchip_set_mux:setting GPIO1-30 to mux:0x1d61
+[    2.107688] rockchip_pinconf_group_set:group[18]:i2c4-sda
+[    2.113123] _rockchip_pinconf_set:GPIO1-30,group=i2c4-sda, function=gpio1_i2c4, type=3
+[    2.121038] _rockchip_pinconf_set:select "gpio1_i2c4"
+[    2.126130] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0xc,value[0]=0x10001000
+[    2.134506] rockchip_pinconf_set,pin=62,param=9
+[    2.139038] rockchip_pinconf_group_set:group[18]:i2c4-sda
+[    2.144470] rk3188_calc_pull_reg_and_bit:GPIO1-30, pull_reg=0xfed1017c, bit=2
+[    2.151638] rockchip_set_pull:GPIO1-30 pull is 0xc0000
+[    2.156776] rockchip_pinconf_set,pin=62,param=0
+[    2.161339] rockchip_pmx_enable:enable function gpio1_i2c4 group i2c4-scl
+[    2.168130] rockchip_set_mux:setting GPIO1-31 to mux:0x1d71
+[    2.173733] rockchip_pinconf_group_set:group[19]:i2c4-scl
+[    2.179134] _rockchip_pinconf_set:GPIO1-31,group=i2c4-scl, function=gpio1_i2c4, type=3
+[    2.187078] _rockchip_pinconf_set:select "gpio1_i2c4"
+[    2.192168] _rockchip_pinconf_set:reg_offset[0]=0xf8,,bit_offset[0]=0xc,value[0]=0x10001000
+[    2.200513] rockchip_pinconf_set,pin=63,param=9
+[    2.205074] rockchip_pinconf_group_set:group[19]:i2c4-scl
+[    2.210476] rk3188_calc_pull_reg_and_bit:GPIO1-31, pull_reg=0xfed1017c, bit=0
+[    2.217643] rockchip_set_pull:GPIO1-31 pull is 0x30000
+[    2.222812] rockchip_pinconf_set,pin=63,param=0
+[    2.228843] rockchip_i2c 2005d000.i2c: cannot get clock
+[    2.234144] rockchip_i2c 2005d000.i2c: set clk(I2C_CLKDIV: 0x00000000)
+[    2.240677] rockchip_i2c 2005d000.i2c: i2c-4: Rockchip I2C adapter
+[    2.247124] media: Linux media interface: v0.10
+[    2.252288] Linux video capture interface: v2.00
+[    2.260806] Advanced Linux Sound Architecture Driver Initialized.
+[    2.273857] Bluetooth: Core ver 2.16
+[    2.277865] NET: Registered protocol family 31
+[    2.282360] Bluetooth: HCI device and connection manager initialized
+[    2.288912] Bluetooth: HCI socket layer initialized
+[    2.293940] Bluetooth: L2CAP socket layer initialized
+[    2.299352] Bluetooth: SCO socket layer initialized
+[    2.307668] cfg80211: Calling CRDA to update world regulatory domain
+[    2.317072] Switching to clocksource rk_timer
+[    2.769566] NET: Registered protocol family 2
+[    2.779108] TCP established hash table entries: 8192 (order: 4, 65536 bytes)
+[    2.786640] TCP bind hash table entries: 8192 (order: 6, 294912 bytes)
+[    2.796618] TCP: Hash tables configured (established 8192 bind 8192)
+[    2.803535] TCP: reno registered
+[    2.806796] UDP hash table entries: 512 (order: 3, 40960 bytes)
+[    2.813251] UDP-Lite hash table entries: 512 (order: 3, 40960 bytes)
+[    2.822996] NET: Registered protocol family 1
+[    2.830483] Unpacking initramfs...
+[    2.947911] Initramfs unpacking failed: junk in compressed archive
+[    2.955794] Freeing initrd memory: 1216K (c2000000 - c2130000)
+[    2.967605] audit: initializing netlink socket (disabled)
+[    2.973822] type=2000 audit(2.950:1): initialized
+[    2.984882] bounce pool size: 64 pages
+[    3.144910] fuse init (API version 7.22)
+[    3.152699] msgmni has been set to 1472
+[    3.176463] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 251)
+[    3.184057] io scheduler noop registered
+[    3.187987] io scheduler deadline registered
+[    3.194949] io scheduler cfq registered (default)
+[    3.206400] rk_serial.c v1.5 2013-11-29
+[    3.211746] rockchip_pmx_enable:enable function gpio1_uart0 group uart0-xfer
+[    3.218868] rockchip_set_mux:setting GPIO1-0 to mux:0x1a01
+[    3.224402] rockchip_set_mux:setting GPIO1-1 to mux:0x1a11
+[    3.229890] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.235425] _rockchip_pinconf_set:GPIO1-0,group=uart0-xfer, function=gpio1_uart0, type=2
+[    3.243552] _rockchip_pinconf_set:select "ap0-vcc"
+[    3.248353] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.256740] rockchip_pinconf_set,pin=32,param=13
+[    3.261362] _rockchip_pinconf_set:GPIO1-1,group=uart0-xfer, function=gpio1_uart0, type=2
+[    3.269493] _rockchip_pinconf_set:select "ap0-vcc"
+[    3.274338] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.282724] rockchip_pinconf_set,pin=33,param=13
+[    3.287343] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.292867] _rockchip_pinconf_set:GPIO1-0,group=uart0-xfer, function=gpio1_uart0, type=3
+[    3.300952] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.306138] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.314433] rockchip_pinconf_set,pin=32,param=9
+[    3.318968] _rockchip_pinconf_set:GPIO1-1,group=uart0-xfer, function=gpio1_uart0, type=3
+[    3.327092] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.332277] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.340537] rockchip_pinconf_set,pin=33,param=9
+[    3.345104] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.350594] rk3188_calc_pull_reg_and_bit:GPIO1-0, pull_reg=0xfed10170, bit=14
+[    3.357767] rockchip_set_pull:GPIO1-0 pull is 0xc0000000
+[    3.363116] rockchip_pinconf_set,pin=32,param=0
+[    3.367651] rk3188_calc_pull_reg_and_bit:GPIO1-1, pull_reg=0xfed10170, bit=12
+[    3.374823] rockchip_set_pull:GPIO1-1 pull is 0x30000000
+[    3.380134] rockchip_pinconf_set,pin=33,param=0
+[    3.384703] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.390191] _rockchip_pinconf_set:GPIO1-0,group=uart0-xfer, function=gpio1_uart0, type=2
+[    3.398313] _rockchip_pinconf_set:select "ap0-vcc"
+[    3.403148] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.411493] rockchip_pinconf_set,pin=32,param=13
+[    3.416150] _rockchip_pinconf_set:GPIO1-1,group=uart0-xfer, function=gpio1_uart0, type=2
+[    3.424272] _rockchip_pinconf_set:select "ap0-vcc"
+[    3.429071] _rockchip_pinconf_set:reg_offset[0]=0x104,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.437452] rockchip_pinconf_set,pin=33,param=13
+[    3.442107] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.447594] _rockchip_pinconf_set:GPIO1-0,group=uart0-xfer, function=gpio1_uart0, type=3
+[    3.455715] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.460864] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.469158] rockchip_pinconf_set,pin=32,param=9
+[    3.473743] _rockchip_pinconf_set:GPIO1-1,group=uart0-xfer, function=gpio1_uart0, type=3
+[    3.481867] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.487015] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.495301] rockchip_pinconf_set,pin=33,param=9
+[    3.499834] rockchip_pinconf_group_set:group[0]:uart0-xfer
+[    3.505357] rk3188_calc_pull_reg_and_bit:GPIO1-0, pull_reg=0xfed10170, bit=14
+[    3.512531] rockchip_set_pull:GPIO1-0 pull is 0xc0000000
+[    3.517843] rockchip_pinconf_set,pin=32,param=0
+[    3.522413] rk3188_calc_pull_reg_and_bit:GPIO1-1, pull_reg=0xfed10170, bit=12
+[    3.529549] rockchip_set_pull:GPIO1-1 pull is 0x30000000
+[    3.534897] rockchip_pinconf_set,pin=33,param=0
+[    3.539432] rockchip_pmx_enable:enable function gpio1_uart0 group uart0-cts
+[    3.546432] rockchip_set_mux:setting GPIO1-2 to mux:0x1a21
+[    3.551955] rockchip_pinconf_group_set:group[1]:uart0-cts
+[    3.557356] _rockchip_pinconf_set:GPIO1-2,group=uart0-cts, function=gpio1_uart0, type=3
+[    3.565390] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.570539] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.578825] rockchip_pinconf_set,pin=34,param=9
+[    3.583394] rockchip_pinconf_group_set:group[1]:uart0-cts
+[    3.588795] rk3188_calc_pull_reg_and_bit:GPIO1-2, pull_reg=0xfed10170, bit=10
+[    3.595967] rockchip_set_pull:GPIO1-2 pull is 0xc000000
+[    3.601193] rockchip_pinconf_set,pin=34,param=0
+[    3.605763] rockchip_pmx_enable:enable function gpio1_uart0 group uart0-rts
+[    3.612763] rockchip_set_mux:setting GPIO1-3 to mux:0x1a31
+[    3.618248] rockchip_pinconf_group_set:group[2]:uart0-rts
+[    3.623686] _rockchip_pinconf_set:GPIO1-3,group=uart0-rts, function=gpio1_uart0, type=3
+[    3.631684] _rockchip_pinconf_set:select "gpio1_uart0"
+[    3.636867] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0x8,value[0]=0x1000100
+[    3.645163] rockchip_pinconf_set,pin=35,param=9
+[    3.649694] rockchip_pinconf_group_set:group[2]:uart0-rts
+[    3.655130] rk3188_calc_pull_reg_and_bit:GPIO1-3, pull_reg=0xfed10170, bit=8
+[    3.662216] rockchip_set_pull:GPIO1-3 pull is 0x3000000
+[    3.667441] rockchip_pinconf_set,pin=35,param=0
+[    3.672607] 10124000.serial: ttyS0 at MMIO 0x10124000 (irq = 66) is a rk29_serial.0
+[    3.682856] serial 10124000.serial: membase 0xf002c000
+[    3.687995] serial_rk_probe1
+[    3.690926] rockchip_pmx_disable:disable function gpio1_uart0 group uart0-xfer
+[    3.698201] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(0)
+[    3.707109] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(1)
+[    3.716014] rockchip_pmx_disable:disable function gpio1_uart0 group uart0-cts
+[    3.723186] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(2)
+[    3.732105] rockchip_pmx_disable:disable function gpio1_uart0 group uart0-rts
+[    3.739241] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(3)
+[    3.748147] rockchip_pmx_enable:enable function gpio1_spi0 group spi0-txd
+[    3.754977] rockchip_set_mux:setting GPIO1-5 to mux:0x1a52
+[    3.760463] rockchip_pinconf_group_set:group[20]:spi0-txd
+[    3.765902] _rockchip_pinconf_set:GPIO1-5,group=spi0-txd, function=gpio1_spi0, type=3
+[    3.773766] _rockchip_pinconf_set:select "gpio1_spi0"
+[    3.778829] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xa,value[0]=0x4000400
+[    3.787124] rockchip_pinconf_set,pin=37,param=9
+[    3.791656] rockchip_pinconf_group_set:group[20]:spi0-txd
+[    3.797092] rk3188_calc_pull_reg_and_bit:GPIO1-5, pull_reg=0xfed10170, bit=4
+[    3.804179] rockchip_set_pull:GPIO1-5 pull is 0x300000
+[    3.809318] rockchip_pinconf_set,pin=37,param=0
+[    3.814890] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-xfer
+[    3.821990] rockchip_set_mux:setting GPIO1-10 to mux:0x1b21
+[    3.827568] rockchip_set_mux:setting GPIO1-11 to mux:0x1b31
+[    3.833179] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    3.838667] _rockchip_pinconf_set:GPIO1-10,group=uart3-xfer, function=gpio1_uart3, type=3
+[    3.846876] _rockchip_pinconf_set:select "gpio1_uart3"
+[    3.852062] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    3.860408] rockchip_pinconf_set,pin=42,param=9
+[    3.864979] _rockchip_pinconf_set:GPIO1-11,group=uart3-xfer, function=gpio1_uart3, type=3
+[    3.873188] _rockchip_pinconf_set:select "gpio1_uart3"
+[    3.878336] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    3.886717] rockchip_pinconf_set,pin=43,param=9
+[    3.891249] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    3.896773] rk3188_calc_pull_reg_and_bit:GPIO1-10, pull_reg=0xfed10174, bit=10
+[    3.904034] rockchip_set_pull:GPIO1-10 pull is 0xc000000
+[    3.909346] rockchip_pinconf_set,pin=42,param=0
+[    3.913915] rk3188_calc_pull_reg_and_bit:GPIO1-11, pull_reg=0xfed10174, bit=8
+[    3.921053] rockchip_set_pull:GPIO1-11 pull is 0x3000000
+[    3.926400] rockchip_pinconf_set,pin=43,param=0
+[    3.930933] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    3.936456] _rockchip_pinconf_set:GPIO1-10,group=uart3-xfer, function=gpio1_uart3, type=3
+[    3.944665] _rockchip_pinconf_set:select "gpio1_uart3"
+[    3.949813] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    3.958194] rockchip_pinconf_set,pin=42,param=9
+[    3.962769] _rockchip_pinconf_set:GPIO1-11,group=uart3-xfer, function=gpio1_uart3, type=3
+[    3.970942] _rockchip_pinconf_set:select "gpio1_uart3"
+[    3.976124] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    3.984506] rockchip_pinconf_set,pin=43,param=9
+[    3.989038] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    3.994576] rk3188_calc_pull_reg_and_bit:GPIO1-10, pull_reg=0xfed10174, bit=10
+[    4.001837] rockchip_set_pull:GPIO1-10 pull is 0xc000000
+[    4.007150] rockchip_pinconf_set,pin=42,param=0
+[    4.011683] rk3188_calc_pull_reg_and_bit:GPIO1-11, pull_reg=0xfed10174, bit=8
+[    4.018855] rockchip_set_pull:GPIO1-11 pull is 0x3000000
+[    4.025015] rockchip_pinconf_set,pin=43,param=0
+[    4.029554] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-cts
+[    4.036568] rockchip_set_mux:setting GPIO1-12 to mux:0x1b41
+[    4.042181] rockchip_pinconf_group_set:group[8]:uart3-cts
+[    4.047583] _rockchip_pinconf_set:GPIO1-12,group=uart3-cts, function=gpio1_uart3, type=3
+[    4.055707] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.060857] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.069239] rockchip_pinconf_set,pin=44,param=9
+[    4.073807] rockchip_pinconf_group_set:group[8]:uart3-cts
+[    4.079209] rk3188_calc_pull_reg_and_bit:GPIO1-12, pull_reg=0xfed10174, bit=6
+[    4.086378] rockchip_set_pull:GPIO1-12 pull is 0xc00000
+[    4.091604] rockchip_pinconf_set,pin=44,param=0
+[    4.096174] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-rts
+[    4.103224] rockchip_set_mux:setting GPIO1-13 to mux:0x1b51
+[    4.108797] rockchip_pinconf_group_set:group[9]:uart3-rts
+[    4.114239] _rockchip_pinconf_set:GPIO1-13,group=uart3-rts, function=gpio1_uart3, type=3
+[    4.122358] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.127505] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.135887] rockchip_pinconf_set,pin=45,param=9
+[    4.140419] rockchip_pinconf_group_set:group[9]:uart3-rts
+[    4.145852] rk3188_calc_pull_reg_and_bit:GPIO1-13, pull_reg=0xfed10174, bit=4
+[    4.153025] rockchip_set_pull:GPIO1-13 pull is 0x300000
+[    4.158250] rockchip_pinconf_set,pin=45,param=0
+[    4.163170] 20068000.serial: ttyS3 at MMIO 0x20068000 (irq = 69) is a rk29_serial.3
+[    4.172859] serial 20068000.serial: membase 0xf002e000
+[    4.177998] serial_rk_probe1
+[    4.180927] rockchip_pmx_disable:disable function gpio1_uart3 group uart3-xfer
+[    4.188198] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(10)
+[    4.197193] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(11)
+[    4.206185] rockchip_pmx_disable:disable function gpio1_uart3 group uart3-cts
+[    4.213357] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(12)
+[    4.222347] rockchip_pmx_disable:disable function gpio1_uart3 group uart3-rts
+[    4.229483] rockchip_set_mux:error:mux_bank(0) != gpio_bank(1), mux_offset(-80) != gpio_offset(13)
+[    4.238481] rockchip-pinctrl 20008000.pinctrl: pin gpio1-5 already requested by 10124000.serial; cannot claim for 20068000.serial
+[    4.250166] rockchip-pinctrl 20008000.pinctrl: pin-37 (20068000.serial) status -22
+[    4.257789] rockchip-pinctrl 20008000.pinctrl: could not request pin 37 on device rockchip-pinctrl
+[    4.266785] serial 20068000.serial: Error applying setting, reverse things back
+[    4.274130] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-xfer
+[    4.281183] rockchip_set_mux:setting GPIO1-10 to mux:0x1b21
+[    4.286796] rockchip_set_mux:setting GPIO1-11 to mux:0x1b31
+[    4.292406] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    4.297895] _rockchip_pinconf_set:GPIO1-10,group=uart3-xfer, function=gpio1_uart3, type=3
+[    4.306104] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.311254] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.319636] rockchip_pinconf_set,pin=42,param=9
+[    4.324208] _rockchip_pinconf_set:GPIO1-11,group=uart3-xfer, function=gpio1_uart3, type=3
+[    4.332416] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.337565] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.345946] rockchip_pinconf_set,pin=43,param=9
+[    4.350478] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    4.356003] rk3188_calc_pull_reg_and_bit:GPIO1-10, pull_reg=0xfed10174, bit=10
+[    4.363264] rockchip_set_pull:GPIO1-10 pull is 0xc000000
+[    4.368575] rockchip_pinconf_set,pin=42,param=0
+[    4.373147] rk3188_calc_pull_reg_and_bit:GPIO1-11, pull_reg=0xfed10174, bit=8
+[    4.380284] rockchip_set_pull:GPIO1-11 pull is 0x3000000
+[    4.385631] rockchip_pinconf_set,pin=43,param=0
+[    4.390163] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    4.395687] _rockchip_pinconf_set:GPIO1-10,group=uart3-xfer, function=gpio1_uart3, type=3
+[    4.403896] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.409044] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.417425] rockchip_pinconf_set,pin=42,param=9
+[    4.421996] _rockchip_pinconf_set:GPIO1-11,group=uart3-xfer, function=gpio1_uart3, type=3
+[    4.430169] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.435352] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.443734] rockchip_pinconf_set,pin=43,param=9
+[    4.448265] rockchip_pinconf_group_set:group[7]:uart3-xfer
+[    4.453789] rk3188_calc_pull_reg_and_bit:GPIO1-10, pull_reg=0xfed10174, bit=10
+[    4.461012] rockchip_set_pull:GPIO1-10 pull is 0xc000000
+[    4.466359] rockchip_pinconf_set,pin=42,param=0
+[    4.470893] rk3188_calc_pull_reg_and_bit:GPIO1-11, pull_reg=0xfed10174, bit=8
+[    4.478065] rockchip_set_pull:GPIO1-11 pull is 0x3000000
+[    4.483413] rockchip_pinconf_set,pin=43,param=0
+[    4.487947] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-cts
+[    4.494947] rockchip_set_mux:setting GPIO1-12 to mux:0x1b41
+[    4.500519] rockchip_pinconf_group_set:group[8]:uart3-cts
+[    4.505956] _rockchip_pinconf_set:GPIO1-12,group=uart3-cts, function=gpio1_uart3, type=3
+[    4.514091] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.519239] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.527621] rockchip_pinconf_set,pin=44,param=9
+[    4.532190] rockchip_pinconf_group_set:group[8]:uart3-cts
+[    4.537591] rk3188_calc_pull_reg_and_bit:GPIO1-12, pull_reg=0xfed10174, bit=6
+[    4.544764] rockchip_set_pull:GPIO1-12 pull is 0xc00000
+[    4.549989] rockchip_pinconf_set,pin=44,param=0
+[    4.554557] rockchip_pmx_enable:enable function gpio1_uart3 group uart3-rts
+[    4.561521] rockchip_set_mux:setting GPIO1-13 to mux:0x1b51
+[    4.567129] rockchip_pinconf_group_set:group[9]:uart3-rts
+[    4.572568] _rockchip_pinconf_set:GPIO1-13,group=uart3-rts, function=gpio1_uart3, type=3
+[    4.580653] _rockchip_pinconf_set:select "gpio1_uart3"
+[    4.585836] _rockchip_pinconf_set:reg_offset[0]=0xf4,,bit_offset[0]=0xe,value[0]=0x40004000
+[    4.594219] rockchip_pinconf_set,pin=45,param=9
+[    4.598750] rockchip_pinconf_group_set:group[9]:uart3-rts
+[    4.604189] rk3188_calc_pull_reg_and_bit:GPIO1-13, pull_reg=0xfed10174, bit=4
+[    4.611326] rockchip_set_pull:GPIO1-13 pull is 0x300000
+[    4.616586] rockchip_pinconf_set,pin=45,param=0
+[    4.656102] loop: module loaded
+[    4.666018] SCSI Media Changer driver v0.25 
+[    4.671007] tun: Universal TUN/TAP device driver, 1.6
+[    4.676124] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+[    4.683207] PPP generic driver version 2.4.2
+[    4.689333] PPP BSD Compression module registered
+[    4.694120] PPP Deflate Compression module registered
+[    4.699259] PPP MPPE Compression module registered
+[    4.704099] NET: Registered protocol family 24
+[    4.708745] SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256) (6 bit encapsulation enabled).
+[    4.718435] CSLIP: code copyright 1989 Regents of the University of California.
+[    4.726258] usbcore: registered new interface driver catc
+[    4.732125] usbcore: registered new interface driver kaweth
+[    4.737700] pegasus: v0.9.3 (2013/04/25), Pegasus/Pegasus II USB Ethernet driver
+[    4.745538] usbcore: registered new interface driver pegasus
+[    4.751577] usbcore: registered new interface driver rtl8150
+[    4.757694] usbcore: registered new interface driver r8152
+[    4.763227] hso: drivers/net/usb/hso.c: Option Wireless
+[    4.769314] usbcore: registered new interface driver hso
+[    4.775408] usbcore: registered new interface driver asix
+[    4.781199] usbcore: registered new interface driver ax88179_178a
+[    4.787751] usbcore: registered new interface driver cdc_ether
+[    4.794025] usbcore: registered new interface driver cdc_eem
+[    4.800064] usbcore: registered new interface driver dm9601
+[    4.806368] usbcore: registered new interface driver smsc75xx
+[    4.812816] usbcore: registered new interface driver smsc95xx
+[    4.818955] usbcore: registered new interface driver gl620a
+[    4.824980] usbcore: registered new interface driver net1080
+[    4.831050] usbcore: registered new interface driver plusb
+[    4.836983] usbcore: registered new interface driver rndis_host
+[    4.843338] usbcore: registered new interface driver cdc_subset
+[    4.849665] usbcore: registered new interface driver zaurus
+[    4.855679] usbcore: registered new interface driver MOSCHIP usb-ethernet driver
+[    4.863548] usbcore: registered new interface driver int51x1
+[    4.869601] usbcore: registered new interface driver kalmia
+[    4.875628] usbcore: registered new interface driver ipheth
+[    4.881860] usbcore: registered new interface driver sierra_net
+[    4.888176] usbcore: registered new interface driver cx82310_eth
+[    4.894901] usbcore: registered new interface driver cdc_ncm
+[    4.900957] usbcore: registered new interface driver qmi_wwan
+[    4.907140] usbcore: registered new interface driver cdc_mbim
+[    4.913531] usbcore: registered new interface driver cdc_acm
+[    4.919190] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[    4.927881] usbcore: registered new interface driver usblp
+[    4.933826] usbcore: registered new interface driver cdc_wdm
+[    4.940163] usbcore: registered new interface driver usb-storage
+[    4.946569] usbcore: registered new interface driver ums-alauda
+[    4.952878] usbcore: registered new interface driver ums-cypress
+[    4.959218] usbcore: registered new interface driver ums-datafab
+[    4.965603] usbcore: registered new interface driver ums_eneub6250
+[    4.972209] usbcore: registered new interface driver ums-freecom
+[    4.978562] usbcore: registered new interface driver ums-isd200
+[    4.984872] usbcore: registered new interface driver ums-jumpshot
+[    4.991298] usbcore: registered new interface driver ums-karma
+[    4.997526] usbcore: registered new interface driver ums-onetouch
+[    5.004006] usbcore: registered new interface driver ums-sddr09
+[    5.010257] usbcore: registered new interface driver ums-sddr55
+[    5.016551] usbcore: registered new interface driver ums-usbat
+[    5.022969] usbcore: registered new interface driver trancevibrator
+[    5.033879] rtc-pcf8563 1-0051: chip found, driver version 0.4.3
+[    5.040835] rockchip_i2c 2002f000.i2c: Warning: addr[0x0051] msg[0].scl_rate( = 0Khz) is too low!
+[    5.050423] rtc-pcf8563 1-0051: low voltage detected, date/time is not reliable.
+[    5.057986] rtc-pcf8563 1-0051: retrieved date/time is not valid.
+[    5.065677] rtc-pcf8563 1-0051: rtc core: registered rtc-pcf8563 as rtc0
+[    5.072706] i2c /dev entries driver
+[    5.082738] IR NEC protocol handler initialized
+[    5.087277] IR RC5(x) protocol handler initialized
+[    5.092126] IR RC6 protocol handler initialized
+[    5.096660] IR JVC protocol handler initialized
+[    5.101193] IR Sony protocol handler initialized
+[    5.105852] IR RC5 (streamzap) protocol handler initialized
+[    5.111426] IR SANYO protocol handler initialized
+[    5.116169] IR MCE Keyboard/mouse protocol handler initialized
+[    5.128392] device-mapper: ioctl: 4.24.0-ioctl (2013-01-15) initialised: dm-devel@redhat.com
+[    5.138303] cpuidle: using governor ladder
+[    5.142463] cpuidle: using governor menu
+[    5.177834] usbcore: registered new interface driver usbhid
+[    5.183475] usbhid: USB HID core driver
+[    5.193353] ashmem: initialized
+[    5.197559] logger: created 256K log 'log_main'
+[    5.203214] logger: created 256K log 'log_events'
+[    5.208966] logger: created 256K log 'log_radio'
+[    5.214668] logger: created 256K log 'log_system'
+[    5.223225] usbcore: registered new interface driver snd-usb-audio
+[    5.234113] u32 classifier
+[    5.236828]     Actions configured
+[    5.240393] Netfilter messages via NETLINK v0.30.
+[    5.245953] nf_conntrack version 0.5.0 (16005 buckets, 64020 max)
+[    5.256959] ctnetlink v0.93: registering with nfnetlink.
+[    5.263051] NF_TPROXY: Transparent proxy support initialized, version 4.1.0
+[    5.270012] NF_TPROXY: Copyright (c) 2006-2007 BalaBit IT Ltd.
+[    5.279641] xt_time: kernel timezone is -0000
+[    5.286022] ip_tables: (C) 2000-2006 Netfilter Core Team
+[    5.294108] arp_tables: (C) 2002 David S. Miller
+[    5.299407] TCP: cubic registered
+[    5.302783] Initializing XFRM netlink socket
+[    5.315468] NET: Registered protocol family 10
+[    5.331330] mip6: Mobile IPv6
+[    5.334747] ip6_tables: (C) 2000-2006 Netfilter Core Team
+[    5.342308] sit: IPv6 over IPv4 tunneling driver
+[    5.351909] NET: Registered protocol family 17
+[    5.356643] NET: Registered protocol family 15
+[    5.362902] Bridge firewalling registered
+[    5.367055] Ebtables v2.0 registered
+[    5.371952] Bluetooth: RFCOMM TTY layer initialized
+[    5.377122] Bluetooth: RFCOMM socket layer initialized
+[    5.382319] Bluetooth: RFCOMM ver 1.11
+[    5.386074] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[    5.391383] Bluetooth: BNEP filters: protocol multicast
+[    5.396755] Bluetooth: BNEP socket layer initialized
+[    5.401722] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[    5.407784] Bluetooth: HIDP socket layer initialized
+[    5.413090] l2tp_core: L2TP core driver, V2.0
+[    5.417574] l2tp_ppp: PPPoL2TP kernel driver, V2.0
+[    5.422699] VFP support v0.3: implementor 41 architecture 3 part 30 variant 9 rev 4
+[    5.436549] init: failed to probe driver -19
+[    5.443955] rockchip_i2c 2002f000.i2c: Warning: addr[0x0051] msg[0].scl_rate( = 0Khz) is too low!
+[    5.453396] rtc-pcf8563 1-0051: low voltage detected, date/time is not reliable.
+[    5.460795] rtc-pcf8563 1-0051: retrieved date/time is not valid.
+[    5.466936] rtc-pcf8563 1-0051: hctosys: invalid date/time
+[    5.472961] ALSA device list:
+[    5.475934]   No soundcards found.
+[    5.482113] Freeing unused kernel memory: 316K (c07e5000 - c0834000)
+[    5.514613] init: could not import file '/init.rockchiprk3188(flatteneddevicet.rc' from '/init.rc'
+[    5.524719] init (1): /proc/1/oom_adj is deprecated, please use /proc/1/oom_score_adj instead.
+[    5.927348] init: Unable to open persistent property directory /data/property errno: 2
+[    5.991774] init: cannot find '/system/vendor/bin/pvrsrvctl', disabling 'pvrsrvctl'
+[    5.999762] init: cannot find '/system/bin/servicemanager', disabling 'servicemanager'
+[    6.007952] init: cannot find '/system/bin/vold', disabling 'vold'
+[    6.014398] init: cannot find '/system/bin/netd', disabling 'netd'
+[    6.020757] init: cannot find '/system/bin/debuggerd', disabling 'debuggerd'
+[    6.031731] init: cannot find '/system/bin/rild', disabling 'ril-daemon'
+[    6.038706] init: cannot find '/system/bin/rild3', disabling 'ril-daemon3'
+[    6.045843] init: cannot find '/system/bin/surfaceflinger', disabling 'surfaceflinger'
+[    6.054010] init: cannot find '/system/bin/app_process', disabling 'zygote'
+[    6.061166] init: cannot find '/system/bin/drmserver', disabling 'drm'
+[    6.068043] init: cannot find '/system/bin/mediaserver', disabling 'media'
+[    6.075188] init: cannot find '/system/bin/installd', disabling 'installd'
+[    6.082320] init: cannot find '/system/etc/install-recovery.sh', disabling 'flash_recovery'
+[    6.090864] init: cannot find '/system/bin/keystore', disabling 'keystore'
+[    6.097988] init: cannot find '/system/bin/drmservice', disabling 'drmservice'
+[    6.105578] init: cannot find '/system/bin/boottone', disabling 'boottone'
+[    6.125433] init: cannot find '/system/bin/sh', disabling 'console'
