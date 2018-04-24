@@ -1,5 +1,5 @@
-3-7
-    -u: 指定Manifest库的Git访问路径。 
+git    
+	-u: 指定Manifest库的Git访问路径。 
     -m: 指定要使用的Manifest文件。 
     -b: 指定要使用Manifest仓库中的某个特定分支。 
     –repo-url: 指定要检查repo是否有更新的远端repoGit库的访问路径。 
@@ -8,11 +8,6 @@
     git cherry-pick 62ecb3
     git checkout -b newbranch 62ecb3
     git rebase --onto master 76cada
-11:30~12:00 gerrit
-    搭建gerrit并关联项目，http://blog.csdn.net/hudashi/article/details/54668359
-
-3-10
-10:00~10:30 git
     拉取指定的分支
     git checkout -b 本地分支名 origin/远程分支名
 
@@ -31,7 +26,6 @@
 
     git stage
 
-16:00~16:30
     git diff filename > *.patch
     git apply patch
 
@@ -44,16 +38,18 @@
     git log/show --stat
 
 	repo forall -p -c 
-4-9
-	9:00~9:30 LVDS 应用详细说明
-	9:30~10:00 phy 驱动
-	10:00~11:00 整理代码
-	11:00~12:30 wifi 架构
-	14:00~15:30 rtc
-	15:30~16:30 phy 文档
-	16:30~17:30 rtc 文档
-	17:30~18:30 git/repo
-	18:30~20:00 usb 驱动
+
+driver:
+	lcd:
+		1.screen接口类型，6、8/10位屏，数据格式
+		2.单6、双6、单8、双8、单10、双10识别
+		3.
+	phy 
+	wifi
+	rtc
+	usb
+	codec
+		
 
 	元器件表示方法：
 	电容:C 电阻:R 电感:L 二极管(LED): D 变压器:T 功率管:Q 芯片:U 接口:J 晶振:Y 保险:F
@@ -69,4 +65,11 @@
 	SPI_LCD
 	RTL8201F
 	CLK
+	TOUCHKEY
+	
+	
+	git push ubt144  HEAD:refs/for/master%r=steven@geniatech.com,r=steven@geniatech.com
+
+
+
 
