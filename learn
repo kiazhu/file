@@ -70,6 +70,6 @@ driver:
 	
 	git push ubt144  HEAD:refs/for/master%r=steven@geniatech.com,r=steven@geniatech.com
 
-
+	export PATH=/opt/openjdk-1.xxx/bin:$PATH
 
 
