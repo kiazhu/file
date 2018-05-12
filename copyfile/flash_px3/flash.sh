@@ -47,6 +47,8 @@ FunFlashImg(){
 	upgrade_tool DI -s system.img
     elif [ "$IMG" == "b" ];then
 	upgrade_tool DI -b boot.img
+    elif [ "$IMG" == "r" ];then
+	upgrade_tool DI resource resource.img
     fi    
     upgrade_tool RD
 }
