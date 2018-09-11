@@ -1,0 +1,8 @@
+Author:zhukunhua@huadean.com
+
+LCD屏的调试改动：
+1.修改fex文档
+2.修改驱动上电等函数
+	lichee/linux-3.4/drivers/video/sunxi/disp2/disp/lcd
+
+	驱动文件拷贝自lt070me05000.c，基于该文件改动过屏初始化部分的代码

@@ -1,0 +1,23 @@
+IP 获取机制：
+https://blog.csdn.net/izobs_lin/article/details/52838862
+
+启动服务：
+frameworks/base/services/java/com/android/server/SystemServer.java
+
+服务：
+frameworks/opt/net/ethernet/java/com/android/server/ethernet/EthernetService.java
+
+STUB:
+frameworks/opt/net/ethernet/java/com/android/server/ethernet/EthernetServiceImpl.java
+
+IP获取机制—IpManager
+android 5.0和android 6.0的IP获取机制都是通过/system/bin下面的dhcpcd的bin档去拿的ip
+不知道是不是dhcpcd本身的问题，这段code其实不是稳定，超时拿不到ip的现象经常可以遇到。只能在这里多加几次try runDhcp。
+frameworks/opt/net/ethernet/java/com/android/server/ethernet/EthernetNetworkFactory.java
+
+2.ETHERNET监听NETD进程的socket
+init.rc
+
+frameworks/base/services/core/java/com/android/server/NetworkManagementService.java
+frameworks/base/core/java/android/net/NetworkFactory.java
+

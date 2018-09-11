@@ -1,0 +1,37 @@
+Author: zhukunhua@huadean.com
+该文档描述如何快速调试sys_config.fex配置文件里面的相关配置
+
+在uboot 命令行环境下配置、查看sys_config.fex：
+1.查看sys_config.fex 指定选项的值
+	命令: sys_config 
+	
+	使用方法:
+	sys_config main_key sub_key or modify_cfg main_key
+	eg.1 读取lcd0_para主键全部信息
+		sunxi#sys_config lcd0_para
+	eg.2 读取lcd0_para主键下的lcd_used
+		sunxi#sys_config lcd0_para lcd_used
+
+2.更改sys_config.fex 配置选项的值
+	命令: setcfg
+
+	使用方法:
+	setcfg modify_cfg main_key sub_key or modify_cfg main_key
+	eg.1 修改lcd0_used为1
+		sunxi#setcfg lcd0_para lcd_used
+		--lcd0_para--
+		 lcd_used : 0?1
+		sunxi#
+
+	eg.2 修改lcd0_used为1,用设置一组的方法
+		setcfg lcd0_para 设置一组
+		sunxi#setcfg lcd0_para
+		退出修改:Ctrl+C 
+
+3.保存配置
+	命令: savecfg
+
+	保存配置,用来改动后保存sys_config.fex配置
+	eg.1 保存配置后重启设备
+	sunxi#savecfg
+	sunxi#reset
